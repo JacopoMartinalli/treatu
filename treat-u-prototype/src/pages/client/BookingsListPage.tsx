@@ -142,8 +142,8 @@ function BookingCard({
   return (
     <Card
       className={isPast ? 'opacity-75' : ''}
-      hoverable={!isPast}
-      onClick={() => !isPast && navigate(`/professional/${booking.professionalId}`)}
+      hoverable
+      onClick={() => navigate(`/bookings/${booking.id}`)}
     >
       <div className="flex items-start gap-4">
         <Avatar

@@ -1,18 +1,24 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   MapPin,
   Star,
-  Shield,
   Clock,
   Calendar,
-  Search,
-  CheckCircle,
   ArrowRight,
-  Sparkles,
+  CheckCircle,
+  Users,
+  TrendingUp,
+  Heart,
+  ChevronDown,
+  Briefcase,
+  Home,
+  Zap,
+  Shield,
+  Euro,
 } from 'lucide-react';
 import { Button } from '../components/shared';
-import { mockProfessionals, serviceCategories } from '../data/mockData';
 
 // ============================================
 // LANDING PAGE
@@ -22,27 +28,24 @@ export function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Section */}
-      <HeroSection onSearch={() => navigate('/search')} onBecomePro={() => navigate('/pro/register')} />
-
-      {/* Features Section */}
-      <FeaturesSection />
-
-      {/* How It Works */}
-      <HowItWorksSection />
-
-      {/* Categories */}
-      <CategoriesSection onCategoryClick={(cat) => navigate(`/search?category=${cat}`)} />
-
-      {/* Top Professionals */}
-      <TopProfessionalsSection
-        professionals={mockProfessionals.slice(0, 4)}
-        onViewProfile={(id) => navigate(`/professional/${id}`)}
+    <div className="min-h-screen bg-warm-50">
+      <HeroSection
+        onSearch={() => navigate('/search')}
+        onBecomePro={() => navigate('/pro/register')}
       />
-
-      {/* CTA Section */}
-      <CTASection onGetStarted={() => navigate('/register')} onBecomePro={() => navigate('/pro/register')} />
+      <ProblemSolutionSection />
+      <HowItWorksSection />
+      <StatsSection />
+      <DualCTASection
+        onClientClick={() => navigate('/register')}
+        onProClick={() => navigate('/pro/register')}
+      />
+      <TestimonialsSection />
+      <FAQSection />
+      <FinalCTASection
+        onGetStarted={() => navigate('/register')}
+        onBecomePro={() => navigate('/pro/register')}
+      />
     </div>
   );
 }
@@ -59,193 +62,221 @@ function HeroSection({
   onBecomePro: () => void;
 }) {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-br from-primary-50 via-white to-secondary-50">
-      {/* Background decoration */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-200 rounded-full opacity-20 blur-3xl" />
-        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary-200 rounded-full opacity-20 blur-3xl" />
-      </div>
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+      {/* Background Elements */}
+      <div className="absolute inset-0 bg-gradient-to-br from-warm-100 via-warm-50 to-secondary-50" />
+      <div className="absolute inset-0 bg-hero-pattern opacity-50" />
 
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-32">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
-          {/* Content */}
+      {/* Decorative shapes */}
+      <div className="absolute top-20 right-[10%] w-72 h-72 bg-primary-200/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-20 left-[5%] w-96 h-96 bg-secondary-200/20 rounded-full blur-3xl" />
+
+      {/* Floating decorative elements */}
+      <motion.div
+        animate={{ y: [-10, 10, -10] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute top-32 right-[15%] w-16 h-16 bg-primary-400/20 rounded-2xl rotate-12 hidden lg:block"
+      />
+      <motion.div
+        animate={{ y: [10, -10, 10] }}
+        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+        className="absolute bottom-40 right-[25%] w-12 h-12 bg-secondary-400/20 rounded-full hidden lg:block"
+      />
+
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-3xl">
+          {/* Badge */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-primary-200 rounded-full px-4 py-2 mb-8 shadow-sm"
           >
-            <div className="inline-flex items-center gap-2 bg-primary-100 text-primary-700 rounded-full px-4 py-2 mb-6">
-              <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">Benessere a domicilio</span>
-            </div>
-
-            <h1 className="text-4xl lg:text-5xl xl:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Il massaggio perfetto,{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 to-secondary-600">
-                a casa tua
-              </span>
-            </h1>
-
-            <p className="text-lg lg:text-xl text-gray-600 mb-8 max-w-xl">
-              Connettiti con massaggiatori professionisti certificati nella tua zona.
-              Prenota in pochi click e goditi un trattamento di qualita senza uscire di casa.
-            </p>
-
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" onClick={onSearch} rightIcon={<Search className="w-5 h-5" />}>
-                Trova un Professionista
-              </Button>
-              <Button variant="outline" size="lg" onClick={onBecomePro}>
-                Diventa Professionista
-              </Button>
-            </div>
-
-            {/* Trust badges */}
-            <div className="flex items-center gap-6 mt-10 pt-10 border-t border-gray-200">
-              <TrustBadge icon={<Shield className="w-5 h-5" />} text="Professionisti Verificati" />
-              <TrustBadge icon={<Star className="w-5 h-5" />} text="4.8 Rating Medio" />
-              <TrustBadge icon={<Clock className="w-5 h-5" />} text="Risposta in 24h" />
-            </div>
+            <span className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
+            <span className="text-sm font-medium text-primary-700">
+              La nuova era del benessere a domicilio
+            </span>
           </motion.div>
 
-          {/* Hero Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="relative hidden lg:block"
+          {/* Main Headline */}
+          <motion.h1
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-[1.1]"
           >
-            <div className="relative z-10">
-              <img
-                src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800"
-                alt="Massaggio rilassante"
-                className="rounded-2xl shadow-2xl"
-              />
+            Il tuo talento.
+            <br />
+            <span className="text-primary-700">I loro spazi.</span>
+            <br />
+            <span className="text-secondary-600">Senza vincoli.</span>
+          </motion.h1>
 
-              {/* Floating card */}
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                className="absolute -right-8 top-1/4 bg-white rounded-xl shadow-lg p-4 max-w-xs"
-              >
-                <div className="flex items-center gap-3">
-                  <img
-                    src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=100"
-                    alt="Professionista"
-                    className="w-12 h-12 rounded-full object-cover"
+          {/* Subheadline */}
+          <motion.p
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-lg sm:text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed"
+          >
+            TreatU connette professionisti del benessere con clienti che cercano
+            trattamenti a domicilio. <span className="text-primary-700 font-medium">Nessuna sede necessaria</span>,
+            orari flessibili, massima liberta.
+          </motion.p>
+
+          {/* CTA Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+            className="flex flex-col sm:flex-row gap-4 mb-12"
+          >
+            <Button
+              size="lg"
+              onClick={onSearch}
+              className="group"
+            >
+              Prenota un trattamento
+              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={onBecomePro}
+              className="border-primary-300 text-primary-700 hover:bg-primary-50"
+            >
+              <Briefcase className="w-5 h-5 mr-2" />
+              Offri i tuoi servizi
+            </Button>
+          </motion.div>
+
+          {/* Social Proof */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.5 }}
+            className="flex flex-wrap items-center gap-8"
+          >
+            <div className="flex items-center gap-3">
+              <div className="flex -space-x-3">
+                {[1, 2, 3, 4].map((i) => (
+                  <div
+                    key={i}
+                    className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-primary-200 to-secondary-200"
                   />
-                  <div>
-                    <p className="font-medium text-gray-900">Giulia R.</p>
-                    <div className="flex items-center gap-1 text-sm">
-                      <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                      <span className="text-gray-600">4.9 (156 recensioni)</span>
-                    </div>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-500 mt-2">
-                  Disponibile oggi alle 18:00
-                </p>
-              </motion.div>
+                ))}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">500+</p>
+                <p className="text-xs text-gray-500">Professionisti attivi</p>
+              </div>
+            </div>
 
-              {/* Stats card */}
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.5, delay: 0.8 }}
-                className="absolute -left-8 bottom-1/4 bg-white rounded-xl shadow-lg p-4"
-              >
-                <div className="flex items-center gap-4">
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary-600">500+</p>
-                    <p className="text-xs text-gray-500">Professionisti</p>
-                  </div>
-                  <div className="w-px h-10 bg-gray-200" />
-                  <div className="text-center">
-                    <p className="text-2xl font-bold text-primary-600">10k+</p>
-                    <p className="text-xs text-gray-500">Clienti Felici</p>
-                  </div>
-                </div>
-              </motion.div>
+            <div className="h-8 w-px bg-gray-300 hidden sm:block" />
+
+            <div className="flex items-center gap-2">
+              <div className="flex">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 text-yellow-400 fill-yellow-400"
+                  />
+                ))}
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">4.8/5</p>
+                <p className="text-xs text-gray-500">15.000+ recensioni</p>
+              </div>
             </div>
           </motion.div>
         </div>
       </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+      >
+        <motion.div
+          animate={{ y: [0, 8, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+          className="flex flex-col items-center text-gray-400"
+        >
+          <span className="text-xs mb-2">Scopri di piu</span>
+          <ChevronDown className="w-5 h-5" />
+        </motion.div>
+      </motion.div>
     </section>
   );
 }
 
-function TrustBadge({ icon, text }: { icon: React.ReactNode; text: string }) {
-  return (
-    <div className="flex items-center gap-2 text-gray-600">
-      <div className="text-primary-600">{icon}</div>
-      <span className="text-sm">{text}</span>
-    </div>
-  );
-}
-
 // ============================================
-// FEATURES SECTION
+// PROBLEM/SOLUTION SECTION
 // ============================================
 
-function FeaturesSection() {
-  const features = [
+function ProblemSolutionSection() {
+  const problems = [
     {
-      icon: <Shield className="w-6 h-6" />,
-      title: 'Professionisti Verificati',
-      description:
-        'Tutti i nostri operatori sono certificati, con P.IVA verificata e recensioni reali.',
+      icon: Home,
+      problem: "Non hai uno studio o una sede?",
+      solution: "Lavora direttamente a casa dei tuoi clienti. Zero costi fissi, massima flessibilita.",
     },
     {
-      icon: <MapPin className="w-6 h-6" />,
-      title: 'Servizio a Domicilio',
-      description:
-        'Il professionista viene da te con tutta l\'attrezzatura necessaria. Zero stress.',
+      icon: Clock,
+      problem: "Hai gia un lavoro o impegni?",
+      solution: "Imposta la tua disponibilita come preferisci. Anche solo qualche ora a settimana.",
     },
     {
-      icon: <Calendar className="w-6 h-6" />,
-      title: 'Prenotazione Facile',
-      description:
-        'Scegli giorno, orario e tipo di trattamento. Conferma in pochi secondi.',
-    },
-    {
-      icon: <Star className="w-6 h-6" />,
-      title: 'Qualita Garantita',
-      description:
-        'Sistema di recensioni trasparente e assistenza clienti sempre disponibile.',
+      icon: Users,
+      problem: "Fai fatica a trovare clienti?",
+      solution: "I clienti ti trovano sulla piattaforma. Tu devi solo accettare le prenotazioni.",
     },
   ];
 
   return (
-    <section className="py-20 bg-white">
+    <section className="py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Perche scegliere TreatU?
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-4">
+            Perche TreatU
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Costruito per chi vuole lavorare in liberta
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            La piattaforma pensata per offrirti il massimo del benessere,
-            con la comodita del servizio a domicilio.
+            Sappiamo le difficolta di chi inizia o di chi vuole arrotondare.
+            TreatU e la soluzione.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {features.map((feature, index) => (
+        <div className="grid md:grid-cols-3 gap-8">
+          {problems.map((item, index) => (
             <motion.div
-              key={feature.title}
+              key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="text-center"
+              transition={{ delay: index * 0.1 }}
+              className="group"
             >
-              <div className="w-14 h-14 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mx-auto mb-4">
-                {feature.icon}
+              <div className="bg-warm-50 rounded-2xl p-8 h-full border border-transparent hover:border-primary-200 transition-all hover:shadow-lg">
+                <div className="w-14 h-14 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary-600 group-hover:text-white transition-colors">
+                  <item.icon className="w-7 h-7" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-3">
+                  {item.problem}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">
+                  {item.solution}
+                </p>
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                {feature.title}
-              </h3>
-              <p className="text-gray-600">{feature.description}</p>
             </motion.div>
           ))}
         </div>
@@ -259,63 +290,366 @@ function FeaturesSection() {
 // ============================================
 
 function HowItWorksSection() {
-  const steps = [
+  const [activeTab, setActiveTab] = useState<'client' | 'pro'>('client');
+
+  const clientSteps = [
     {
-      step: '01',
-      title: 'Cerca',
-      description: 'Inserisci la tua zona e trova professionisti disponibili vicino a te.',
+      step: "01",
+      title: "Cerca nella tua zona",
+      description: "Inserisci il tuo indirizzo e trova professionisti disponibili vicino a te.",
     },
     {
-      step: '02',
-      title: 'Scegli',
-      description: 'Confronta profili, recensioni e prezzi. Seleziona il trattamento ideale.',
+      step: "02",
+      title: "Scegli e prenota",
+      description: "Confronta profili, leggi le recensioni e prenota il trattamento che preferisci.",
     },
     {
-      step: '03',
-      title: 'Prenota',
-      description: 'Scegli data, orario e conferma. Ricevi la conferma immediata.',
+      step: "03",
+      title: "Rilassati a casa tua",
+      description: "Il professionista arriva da te con tutto l'occorrente. Tu devi solo goderti il momento.",
+    },
+  ];
+
+  const proSteps = [
+    {
+      step: "01",
+      title: "Crea il tuo profilo",
+      description: "Registrati, aggiungi i tuoi servizi, i prezzi e le zone che copri.",
     },
     {
-      step: '04',
-      title: 'Rilassati',
-      description: 'Il professionista arriva a casa tua. Goditi il tuo momento di benessere.',
+      step: "02",
+      title: "Imposta la disponibilita",
+      description: "Decidi quando sei disponibile. Cambia gli orari quando vuoi.",
+    },
+    {
+      step: "03",
+      title: "Ricevi prenotazioni",
+      description: "I clienti ti trovano e prenotano. Tu confermi e vai a lavorare.",
+    },
+  ];
+
+  const steps = activeTab === 'client' ? clientSteps : proSteps;
+
+  return (
+    <section className="py-24 bg-warm-100/50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-4">
+            Come funziona
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-8">
+            Semplice, veloce, senza complicazioni
+          </h2>
+
+          {/* Tab Switcher */}
+          <div className="inline-flex bg-white rounded-full p-1.5 shadow-sm border border-gray-200">
+            <button
+              onClick={() => setActiveTab('client')}
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                activeTab === 'client'
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Per i Clienti
+            </button>
+            <button
+              onClick={() => setActiveTab('pro')}
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                activeTab === 'pro'
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Per i Professionisti
+            </button>
+          </div>
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeTab}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="grid md:grid-cols-3 gap-8"
+          >
+            {steps.map((step, index) => (
+              <div key={step.step} className="relative">
+                {/* Connector line */}
+                {index < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary-300 to-transparent" />
+                )}
+
+                <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow relative">
+                  <div className="flex items-center gap-4 mb-4">
+                    <span className="text-4xl font-bold text-primary-200">
+                      {step.step}
+                    </span>
+                    <div className="w-12 h-0.5 bg-primary-300" />
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-900 mb-3">
+                    {step.title}
+                  </h3>
+                  <p className="text-gray-600">
+                    {step.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </motion.div>
+        </AnimatePresence>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
+// STATS SECTION
+// ============================================
+
+function StatsSection() {
+  const stats = [
+    { value: "500+", label: "Professionisti attivi", icon: Users },
+    { value: "15.000+", label: "Trattamenti completati", icon: Heart },
+    { value: "4.8", label: "Valutazione media", icon: Star },
+    { value: "92%", label: "Clienti soddisfatti", icon: TrendingUp },
+  ];
+
+  return (
+    <section className="py-20 bg-primary-700">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {stats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="text-center"
+            >
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mx-auto mb-4">
+                <stat.icon className="w-6 h-6 text-secondary-300" />
+              </div>
+              <p className="text-3xl sm:text-4xl font-bold text-white mb-1">
+                {stat.value}
+              </p>
+              <p className="text-primary-200 text-sm">
+                {stat.label}
+              </p>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
+// DUAL CTA SECTION
+// ============================================
+
+function DualCTASection({
+  onClientClick,
+  onProClick,
+}: {
+  onClientClick: () => void;
+  onProClick: () => void;
+}) {
+  return (
+    <section className="py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Scegli il tuo percorso
+          </h2>
+          <p className="text-lg text-gray-600">
+            Che tu voglia prenotare o offrire servizi, TreatU e per te.
+          </p>
+        </motion.div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Client Card */}
+          <motion.div
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-secondary-50 to-secondary-100 p-8 lg:p-10 border border-secondary-200 hover:border-secondary-300 transition-all"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-200/50 rounded-full blur-3xl" />
+
+            <div className="relative">
+              <div className="w-16 h-16 bg-secondary-200 text-secondary-700 rounded-2xl flex items-center justify-center mb-6">
+                <Heart className="w-8 h-8" />
+              </div>
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Cerchi un trattamento?
+              </h3>
+
+              <ul className="space-y-3 mb-8">
+                {[
+                  "Professionisti verificati e recensiti",
+                  "Prenoti in pochi click",
+                  "Il massaggiatore viene da te",
+                  "Risparmia fino al 30% rispetto ai centri",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-gray-700">
+                    <CheckCircle className="w-5 h-5 text-secondary-600 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                size="lg"
+                onClick={onClientClick}
+                className="w-full sm:w-auto bg-secondary-600 hover:bg-secondary-700 group"
+              >
+                Trova un professionista
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </motion.div>
+
+          {/* Pro Card */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-50 to-primary-100 p-8 lg:p-10 border border-primary-200 hover:border-primary-300 transition-all"
+          >
+            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-200/50 rounded-full blur-3xl" />
+
+            <div className="relative">
+              <div className="w-16 h-16 bg-primary-200 text-primary-700 rounded-2xl flex items-center justify-center mb-6">
+                <Briefcase className="w-8 h-8" />
+              </div>
+
+              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+                Offri i tuoi servizi?
+              </h3>
+
+              <ul className="space-y-3 mb-8">
+                {[
+                  "Nessun costo per iniziare (piano Free)",
+                  "Gestisci orari e disponibilita",
+                  "I clienti ti trovano automaticamente",
+                  "Guadagna in media 45€/ora netti",
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-gray-700">
+                    <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                size="lg"
+                onClick={onProClick}
+                className="w-full sm:w-auto group"
+              >
+                Inizia a guadagnare
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </div>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
+// TESTIMONIALS SECTION
+// ============================================
+
+function TestimonialsSection() {
+  const testimonials = [
+    {
+      quote: "Da quando uso TreatU ho triplicato i miei clienti. Posso lavorare negli orari che preferisco e non devo preoccuparmi dell'affitto di uno studio.",
+      name: "Giulia R.",
+      role: "Massaggiatrice, Milano",
+      type: "pro" as const,
+    },
+    {
+      quote: "Prenotare e semplicissimo. Ho trovato una professionista fantastica a 10 minuti da casa. Non tornero mai piu ai centri tradizionali.",
+      name: "Marco T.",
+      role: "Cliente da 6 mesi",
+      type: "client" as const,
+    },
+    {
+      quote: "Lavoro come impiegata e faccio massaggi nel weekend. TreatU mi permette di arrotondare senza stress e con clienti gia pronti.",
+      name: "Sara M.",
+      role: "Massaggiatrice part-time, Roma",
+      type: "pro" as const,
     },
   ];
 
   return (
-    <section className="py-20 bg-gray-50">
+    <section className="py-24 bg-warm-100/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Come funziona
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-4">
+            Testimonianze
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+            Cosa dicono di noi
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Prenotare un massaggio non e mai stato cosi semplice.
-            In quattro semplici passi sei pronto per rilassarti.
-          </p>
-        </div>
+        </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {steps.map((step, index) => (
+        <div className="grid md:grid-cols-3 gap-8">
+          {testimonials.map((testimonial, index) => (
             <motion.div
-              key={step.step}
+              key={index}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="relative"
+              transition={{ delay: index * 0.1 }}
+              className="bg-white rounded-2xl p-8 shadow-sm"
             >
-              {index < steps.length - 1 && (
-                <div className="hidden lg:block absolute top-8 left-1/2 w-full h-0.5 bg-primary-200" />
-              )}
-              <div className="relative bg-white rounded-xl p-6 shadow-sm">
-                <div className="w-16 h-16 bg-primary-600 text-white rounded-full flex items-center justify-center text-xl font-bold mb-4">
-                  {step.step}
+              <div className="flex items-center gap-1 mb-4">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Star
+                    key={i}
+                    className="w-5 h-5 text-yellow-400 fill-yellow-400"
+                  />
+                ))}
+              </div>
+
+              <blockquote className="text-gray-700 mb-6 leading-relaxed">
+                "{testimonial.quote}"
+              </blockquote>
+
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="font-semibold text-gray-900">{testimonial.name}</p>
+                  <p className="text-sm text-gray-500">{testimonial.role}</p>
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {step.title}
-                </h3>
-                <p className="text-gray-600">{step.description}</p>
+                <span className={`text-xs font-medium px-3 py-1 rounded-full ${
+                  testimonial.type === 'pro'
+                    ? 'bg-primary-100 text-primary-700'
+                    : 'bg-secondary-100 text-secondary-700'
+                }`}>
+                  {testimonial.type === 'pro' ? 'Professionista' : 'Cliente'}
+                </span>
               </div>
             </motion.div>
           ))}
@@ -326,119 +660,92 @@ function HowItWorksSection() {
 }
 
 // ============================================
-// CATEGORIES SECTION
+// FAQ SECTION
 // ============================================
 
-function CategoriesSection({ onCategoryClick }: { onCategoryClick: (cat: string) => void }) {
+function FAQSection() {
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
+
+  const faqs = [
+    {
+      question: "Quanto costa usare TreatU come professionista?",
+      answer: "Puoi iniziare gratis con il piano Free. Tratteniamo una piccola commissione solo quando completi un trattamento. Il piano Premium offre piu visibilita e funzionalita avanzate a un canone mensile.",
+    },
+    {
+      question: "Come vengono verificati i professionisti?",
+      answer: "Verifichiamo l'identita, la P.IVA e le certificazioni di ogni professionista. Inoltre, il sistema di recensioni permette ai clienti di valutare ogni esperienza.",
+    },
+    {
+      question: "Posso scegliere quando lavorare?",
+      answer: "Assolutamente si. Tu imposti la tua disponibilita nel calendario e la modifichi quando vuoi. Puoi lavorare full-time, part-time, solo nei weekend - decidi tu.",
+    },
+    {
+      question: "Come funziona il pagamento?",
+      answer: "I clienti pagano tramite la piattaforma. Tu ricevi il pagamento entro 3 giorni lavorativi dal completamento del trattamento, al netto della commissione.",
+    },
+    {
+      question: "Cosa succede se un cliente cancella?",
+      answer: "La nostra policy prevede cancellazione gratuita fino a 24 ore prima. Cancellazioni tardive comportano un rimborso parziale al professionista per il tempo riservato.",
+    },
+    {
+      question: "Devo portare l'attrezzatura?",
+      answer: "Si, i professionisti portano tutto il necessario per il trattamento (lettino portatile, oli, asciugamani). E parte del servizio a domicilio.",
+    },
+  ];
+
   return (
-    <section className="py-20 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-            Tipi di Trattamento
+    <section className="py-24 bg-white">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-4">
+            FAQ
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
+            Domande frequenti
           </h2>
-          <p className="text-lg text-gray-600">
-            Scegli il massaggio piu adatto alle tue esigenze
-          </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-          {serviceCategories.map((category, index) => (
-            <motion.button
-              key={category.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => onCategoryClick(category.id)}
-              className="bg-gray-50 hover:bg-primary-50 border-2 border-transparent hover:border-primary-200 rounded-xl p-6 text-center transition-all"
-            >
-              <span className="text-3xl mb-2 block">{category.icon}</span>
-              <span className="text-sm font-medium text-gray-700">
-                {category.name}
-              </span>
-            </motion.button>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
-// ============================================
-// TOP PROFESSIONALS SECTION
-// ============================================
-
-function TopProfessionalsSection({
-  professionals,
-  onViewProfile,
-}: {
-  professionals: typeof mockProfessionals;
-  onViewProfile: (id: string) => void;
-}) {
-  return (
-    <section className="py-20 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-end mb-12">
-          <div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              I Nostri Top Professionisti
-            </h2>
-            <p className="text-lg text-gray-600">
-              Scopri i massaggiatori piu apprezzati dai nostri clienti
-            </p>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {professionals.map((pro, index) => (
+        <div className="space-y-4">
+          {faqs.map((faq, index) => (
             <motion.div
-              key={pro.id}
-              initial={{ opacity: 0, y: 20 }}
+              key={index}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
-              onClick={() => onViewProfile(pro.id)}
-              className="bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all cursor-pointer group"
+              transition={{ delay: index * 0.05 }}
+              className="border border-gray-200 rounded-xl overflow-hidden"
             >
-              <div className="aspect-square relative overflow-hidden">
-                <img
-                  src={pro.avatar}
-                  alt={`${pro.firstName} ${pro.lastName}`}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              <button
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                className="w-full flex items-center justify-between p-5 text-left hover:bg-gray-50 transition-colors"
+              >
+                <span className="font-medium text-gray-900">{faq.question}</span>
+                <ChevronDown
+                  className={`w-5 h-5 text-gray-500 transition-transform ${
+                    openIndex === index ? 'rotate-180' : ''
+                  }`}
                 />
-                {pro.isVerified && (
-                  <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-sm rounded-full px-2 py-1 flex items-center gap-1">
-                    <CheckCircle className="w-4 h-4 text-primary-600" />
-                    <span className="text-xs font-medium">Verificato</span>
-                  </div>
+              </button>
+              <AnimatePresence>
+                {openIndex === index && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <p className="px-5 pb-5 text-gray-600">
+                      {faq.answer}
+                    </p>
+                  </motion.div>
                 )}
-              </div>
-              <div className="p-4">
-                <h3 className="font-semibold text-gray-900">
-                  {pro.firstName} {pro.lastName}
-                </h3>
-                <div className="flex items-center gap-1 mt-1">
-                  <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
-                  <span className="text-sm font-medium">{pro.rating}</span>
-                  <span className="text-sm text-gray-500">
-                    ({pro.reviewCount} recensioni)
-                  </span>
-                </div>
-                <p className="text-sm text-gray-500 mt-2 line-clamp-2">
-                  {pro.bio}
-                </p>
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="text-sm text-gray-600">
-                    da <span className="font-semibold text-primary-600">
-                      {Math.min(...pro.services.map(s => s.price))}
-                    </span>/trattamento
-                  </span>
-                  <ArrowRight className="w-4 h-4 text-gray-400 group-hover:text-primary-600 transition-colors" />
-                </div>
-              </div>
+              </AnimatePresence>
             </motion.div>
           ))}
         </div>
@@ -448,10 +755,10 @@ function TopProfessionalsSection({
 }
 
 // ============================================
-// CTA SECTION
+// FINAL CTA SECTION
 // ============================================
 
-function CTASection({
+function FinalCTASection({
   onGetStarted,
   onBecomePro,
 }: {
@@ -459,81 +766,44 @@ function CTASection({
   onBecomePro: () => void;
 }) {
   return (
-    <section className="py-20 bg-gradient-to-br from-primary-600 to-secondary-600">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-12">
-          {/* For Clients */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white"
-          >
-            <h3 className="text-2xl font-bold mb-4">Sei un Cliente?</h3>
-            <p className="text-white/80 mb-6">
-              Registrati gratuitamente e scopri i migliori professionisti nella tua zona.
-              Prenota il tuo prossimo massaggio in pochi click.
-            </p>
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-primary-300" />
-                <span>Registrazione gratuita</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-primary-300" />
-                <span>Professionisti verificati</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-primary-300" />
-                <span>Prenotazione semplice</span>
-              </li>
-            </ul>
+    <section className="py-24 bg-gradient-to-br from-primary-700 via-primary-800 to-primary-900 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute inset-0 bg-hero-pattern opacity-10" />
+      <div className="absolute top-0 right-0 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary-400/10 rounded-full blur-3xl" />
+
+      <div className="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
+            Pronto a iniziare?
+          </h2>
+          <p className="text-lg sm:text-xl text-primary-200 mb-10 max-w-2xl mx-auto">
+            Unisciti a TreatU oggi. Che tu voglia rilassarti o far crescere
+            la tua attivita, siamo qui per te.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
-              variant="secondary"
               size="lg"
               onClick={onGetStarted}
-              className="bg-white text-primary-600 hover:bg-gray-100"
+              className="bg-white text-primary-700 hover:bg-gray-100"
             >
-              Inizia Ora
+              Prenota un trattamento
             </Button>
-          </motion.div>
-
-          {/* For Professionals */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-white/10 backdrop-blur-sm rounded-2xl p-8 text-white"
-          >
-            <h3 className="text-2xl font-bold mb-4">Sei un Professionista?</h3>
-            <p className="text-white/80 mb-6">
-              Unisciti alla nostra rete di massaggiatori. Gestisci i tuoi appuntamenti,
-              aumenta la tua visibilita e fai crescere il tuo business.
-            </p>
-            <ul className="space-y-3 mb-8">
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-primary-300" />
-                <span>Piano Free disponibile</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-primary-300" />
-                <span>Dashboard completa</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <CheckCircle className="w-5 h-5 text-primary-300" />
-                <span>Gestione calendario</span>
-              </li>
-            </ul>
             <Button
-              variant="outline"
               size="lg"
+              variant="outline"
               onClick={onBecomePro}
-              className="border-white text-white hover:bg-white/10"
+              className="border-white/30 text-white hover:bg-white/10"
             >
-              Diventa Partner
+              Diventa professionista
             </Button>
-          </motion.div>
-        </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

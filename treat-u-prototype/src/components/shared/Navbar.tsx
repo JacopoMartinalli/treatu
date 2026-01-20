@@ -1,11 +1,12 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LogOut, Calendar, Settings } from 'lucide-react';
+import { Menu, X, User, LogOut, Calendar, Settings, Heart } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from './Button';
 import { Avatar } from './Avatar';
+import { NotificationDropdown } from './NotificationDropdown';
 
 // ============================================
 // COMPONENT
@@ -14,11 +15,23 @@ import { Avatar } from './Avatar';
 export function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuthStore();
 
   const isProfessional = user?.role === 'professional';
+  const isLandingPage = location.pathname === '/';
+
+  // Gestione scroll per effetto navbar
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    handleScroll(); // Check initial scroll position
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     logout();
@@ -27,13 +40,18 @@ export function Navbar() {
   };
 
   return (
-    <nav className="bg-white border-b border-gray-100 sticky top-0 z-30">
+    <nav className={cn(
+      'sticky top-0 z-30 transition-all duration-300',
+      scrolled || !isLandingPage
+        ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm'
+        : 'bg-transparent'
+    )}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
           <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center">
+            <Link to="/" className="flex items-center gap-2 group">
+              <div className="w-9 h-9 bg-gradient-to-br from-primary-600 to-primary-400 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
                 <span className="text-white font-bold text-sm">TU</span>
               </div>
               <span className="text-xl font-bold text-gray-900">
@@ -66,8 +84,14 @@ export function Navbar() {
                     <NavLink to="/bookings" active={location.pathname === '/bookings'}>
                       Prenotazioni
                     </NavLink>
+                    <NavLink to="/favorites" active={location.pathname === '/favorites'}>
+                      Preferiti
+                    </NavLink>
                   </>
                 )}
+
+                {/* Notifications */}
+                <NotificationDropdown />
 
                 {/* User Menu */}
                 <div className="relative">
@@ -223,6 +247,9 @@ export function Navbar() {
                       </MobileNavLink>
                       <MobileNavLink to="/bookings" onClick={() => setIsMenuOpen(false)}>
                         Le mie Prenotazioni
+                      </MobileNavLink>
+                      <MobileNavLink to="/favorites" onClick={() => setIsMenuOpen(false)}>
+                        I miei Preferiti
                       </MobileNavLink>
                     </>
                   )}

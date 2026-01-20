@@ -4,16 +4,26 @@ import { Toaster } from 'react-hot-toast';
 // Layout
 import { MainLayout } from './layouts/MainLayout';
 
-// Pages
+// Public Pages
 import { LandingPage } from './pages/LandingPage';
 import { LoginPage } from './pages/auth/LoginPage';
 import { RegisterPage } from './pages/auth/RegisterPage';
+
+// Client Pages
 import { SearchPage } from './pages/client/SearchPage';
 import { ProfessionalProfilePage } from './pages/client/ProfessionalProfilePage';
 import { BookingPage } from './pages/client/BookingPage';
 import { BookingsListPage } from './pages/client/BookingsListPage';
+import { BookingDetailPage } from './pages/client/BookingDetailPage';
+import { ProfilePage } from './pages/client/ProfilePage';
+import { SettingsPage } from './pages/client/SettingsPage';
+import { FavoritesPage } from './pages/client/FavoritesPage';
+
+// Professional Pages
 import { RegisterProfessionalPage } from './pages/professional/RegisterProfessionalPage';
 import { DashboardPage } from './pages/professional/DashboardPage';
+import { CalendarPage } from './pages/professional/CalendarPage';
+import { ProfessionalProfilePage as ProProfilePage } from './pages/professional/ProfilePage';
 
 // ============================================
 // APP
@@ -60,12 +70,16 @@ function App() {
           {/* Client Routes */}
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/bookings" element={<BookingsListPage />} />
+          <Route path="/bookings/:id" element={<BookingDetailPage />} />
+          <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
+          <Route path="/favorites" element={<FavoritesPage />} />
 
           {/* Professional Routes */}
           <Route path="/pro/register" element={<RegisterProfessionalPage />} />
           <Route path="/pro/dashboard" element={<DashboardPage />} />
-          <Route path="/pro/calendar" element={<DashboardPage />} />
-          <Route path="/pro/profile" element={<DashboardPage />} />
+          <Route path="/pro/calendar" element={<CalendarPage />} />
+          <Route path="/pro/profile" element={<ProProfilePage />} />
         </Route>
       </Routes>
     </BrowserRouter>
