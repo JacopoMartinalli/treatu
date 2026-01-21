@@ -71,122 +71,190 @@ function HeroSection({
       <div className="absolute top-20 right-[10%] w-72 h-72 bg-primary-200/30 rounded-full blur-3xl" />
       <div className="absolute bottom-20 left-[5%] w-96 h-96 bg-secondary-200/20 rounded-full blur-3xl" />
 
-      {/* Floating decorative elements */}
-      <motion.div
-        animate={{ y: [-10, 10, -10] }}
-        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-32 right-[15%] w-16 h-16 bg-primary-400/20 rounded-2xl rotate-12 hidden lg:block"
-      />
-      <motion.div
-        animate={{ y: [10, -10, 10] }}
-        transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute bottom-40 right-[25%] w-12 h-12 bg-secondary-400/20 rounded-full hidden lg:block"
-      />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="max-w-3xl">
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-primary-200 rounded-full px-4 py-2 mb-8 shadow-sm"
-          >
-            <span className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-primary-700">
-              La nuova era del benessere a domicilio
-            </span>
-          </motion.div>
-
-          {/* Main Headline */}
-          <motion.h1
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-[1.1]"
-          >
-            Il tuo talento.
-            <br />
-            <span className="text-primary-700">I loro spazi.</span>
-            <br />
-            <span className="text-secondary-600">Senza vincoli.</span>
-          </motion.h1>
-
-          {/* Subheadline */}
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg sm:text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed"
-          >
-            TreatU connette professionisti del benessere con clienti che cercano
-            trattamenti a domicilio. <span className="text-primary-700 font-medium">Nessuna sede necessaria</span>,
-            orari flessibili, massima liberta.
-          </motion.p>
-
-          {/* CTA Buttons */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="flex flex-col sm:flex-row gap-4 mb-12"
-          >
-            <Button
-              size="lg"
-              onClick={onSearch}
-              className="group"
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-20">
+        <div className="grid lg:grid-cols-2 gap-12 items-center">
+          {/* Left Content */}
+          <div>
+            {/* Badge */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 bg-white/80 backdrop-blur-sm border border-primary-200 rounded-full px-4 py-2 mb-6 shadow-sm"
             >
-              Prenota un trattamento
-              <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              onClick={onBecomePro}
-              className="border-primary-300 text-primary-700 hover:bg-primary-50"
+              <span className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
+              <span className="text-sm font-medium text-primary-700">
+                Benessere a domicilio
+              </span>
+            </motion.div>
+
+            {/* Main Headline */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 mb-6 leading-[1.1]"
             >
-              <Briefcase className="w-5 h-5 mr-2" />
-              Offri i tuoi servizi
-            </Button>
-          </motion.div>
+              Massaggi e trattamenti
+              <br />
+              <span className="text-primary-700">a casa tua</span>
+            </motion.h1>
 
-          {/* Social Proof */}
+            {/* Subheadline */}
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="text-lg sm:text-xl text-gray-600 mb-8 max-w-xl leading-relaxed"
+            >
+              TreatU connette chi cerca benessere con professionisti qualificati.
+              Prenota un massaggio o offri i tuoi servizi - tutto in un'unica piattaforma.
+            </motion.p>
+
+            {/* Social Proof */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="flex flex-wrap items-center gap-6 mb-8"
+            >
+              <div className="flex items-center gap-2">
+                <div className="flex">
+                  {[1, 2, 3, 4, 5].map((i) => (
+                    <Star
+                      key={i}
+                      className="w-5 h-5 text-yellow-400 fill-yellow-400"
+                    />
+                  ))}
+                </div>
+                <span className="text-sm font-medium text-gray-700">4.8/5</span>
+                <span className="text-sm text-gray-500">(15k+ recensioni)</span>
+              </div>
+            </motion.div>
+
+            {/* CTA Cards - Client vs Pro */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="grid sm:grid-cols-2 gap-4"
+            >
+              {/* Client Card */}
+              <div
+                onClick={onSearch}
+                className="group bg-white rounded-2xl p-6 shadow-sm border-2 border-transparent hover:border-secondary-300 hover:shadow-lg transition-all cursor-pointer"
+              >
+                <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-secondary-200 transition-colors">
+                  <Heart className="w-6 h-6 text-secondary-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Cerco un trattamento
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Trova professionisti verificati nella tua zona
+                </p>
+                <span className="inline-flex items-center text-secondary-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                  Cerca ora
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </span>
+              </div>
+
+              {/* Pro Card */}
+              <div
+                onClick={onBecomePro}
+                className="group bg-white rounded-2xl p-6 shadow-sm border-2 border-transparent hover:border-primary-300 hover:shadow-lg transition-all cursor-pointer"
+              >
+                <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center mb-4 group-hover:bg-primary-200 transition-colors">
+                  <Briefcase className="w-6 h-6 text-primary-600" />
+                </div>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  Sono un professionista
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Lavora in autonomia, senza costi fissi
+                </p>
+                <span className="inline-flex items-center text-primary-600 font-medium text-sm group-hover:translate-x-1 transition-transform">
+                  Inizia gratis
+                  <ArrowRight className="w-4 h-4 ml-1" />
+                </span>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Right Content - Hero Image */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.5 }}
-            className="flex flex-wrap items-center gap-8"
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.6, delay: 0.3 }}
+            className="relative hidden lg:block"
           >
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map((i) => (
-                  <div
-                    key={i}
-                    className="w-10 h-10 rounded-full border-2 border-white bg-gradient-to-br from-primary-200 to-secondary-200"
-                  />
-                ))}
+            {/* Main Image */}
+            <div className="relative">
+              <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
+                <img
+                  src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=800&q=80"
+                  alt="Massaggio rilassante a domicilio"
+                  className="w-full h-full object-cover"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
               </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">500+</p>
-                <p className="text-xs text-gray-500">Professionisti attivi</p>
-              </div>
-            </div>
 
-            <div className="h-8 w-px bg-gray-300 hidden sm:block" />
+              {/* Floating Card - Rating */}
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.7 }}
+                className="absolute -left-6 top-1/4 bg-white rounded-2xl p-4 shadow-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded-full overflow-hidden">
+                    <img
+                      src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80"
+                      alt="Professionista"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">Giulia R.</p>
+                    <div className="flex items-center gap-1">
+                      <Star className="w-4 h-4 text-yellow-400 fill-yellow-400" />
+                      <span className="text-sm text-gray-600">4.9 (127)</span>
+                    </div>
+                  </div>
+                </div>
+              </motion.div>
 
-            <div className="flex items-center gap-2">
-              <div className="flex">
-                {[1, 2, 3, 4, 5].map((i) => (
-                  <Star
-                    key={i}
-                    className="w-5 h-5 text-yellow-400 fill-yellow-400"
-                  />
-                ))}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-gray-900">4.8/5</p>
-                <p className="text-xs text-gray-500">15.000+ recensioni</p>
-              </div>
+              {/* Floating Card - Booking */}
+              <motion.div
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, delay: 0.9 }}
+                className="absolute -right-6 bottom-1/4 bg-white rounded-2xl p-4 shadow-lg"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
+                    <CheckCircle className="w-5 h-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900 text-sm">Prenotato!</p>
+                    <p className="text-xs text-gray-500">Massaggio domani alle 18:00</p>
+                  </div>
+                </div>
+              </motion.div>
+
+              {/* Stats Badge */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 1.1 }}
+                className="absolute -bottom-4 left-1/2 -translate-x-1/2 bg-primary-700 text-white rounded-full px-6 py-3 shadow-lg"
+              >
+                <div className="flex items-center gap-4 text-sm">
+                  <span><strong>500+</strong> professionisti</span>
+                  <span className="w-px h-4 bg-white/30" />
+                  <span><strong>15k+</strong> trattamenti</span>
+                </div>
+              </motion.div>
             </div>
           </motion.div>
         </div>
@@ -196,7 +264,7 @@ function HeroSection({
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 1 }}
+        transition={{ delay: 1.2 }}
         className="absolute bottom-8 left-1/2 -translate-x-1/2"
       >
         <motion.div
@@ -352,7 +420,7 @@ function HowItWorksSection() {
               onClick={() => setActiveTab('client')}
               className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'client'
-                  ? 'bg-primary-600 text-white shadow-sm'
+                  ? 'bg-secondary-600 text-white shadow-sm'
                   : 'text-gray-600 hover:text-gray-900'
               }`}
             >
@@ -384,15 +452,21 @@ function HowItWorksSection() {
               <div key={step.step} className="relative">
                 {/* Connector line */}
                 {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary-300 to-transparent" />
+                  <div className={`hidden md:block absolute top-12 left-[60%] w-[80%] h-0.5 bg-gradient-to-r ${
+                    activeTab === 'client' ? 'from-secondary-300' : 'from-primary-300'
+                  } to-transparent`} />
                 )}
 
                 <div className="bg-white rounded-2xl p-8 shadow-sm hover:shadow-md transition-shadow relative">
                   <div className="flex items-center gap-4 mb-4">
-                    <span className="text-4xl font-bold text-primary-200">
+                    <span className={`text-4xl font-bold ${
+                      activeTab === 'client' ? 'text-secondary-200' : 'text-primary-200'
+                    }`}>
                       {step.step}
                     </span>
-                    <div className="w-12 h-0.5 bg-primary-300" />
+                    <div className={`w-12 h-0.5 ${
+                      activeTab === 'client' ? 'bg-secondary-300' : 'bg-primary-300'
+                    }`} />
                   </div>
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">
                     {step.title}
@@ -486,13 +560,21 @@ function DualCTASection({
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-secondary-50 to-secondary-100 p-8 lg:p-10 border border-secondary-200 hover:border-secondary-300 transition-all"
+            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-secondary-50 to-secondary-100 border border-secondary-200 hover:border-secondary-300 transition-all"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary-200/50 rounded-full blur-3xl" />
+            {/* Image Section */}
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?w=800&q=80"
+                alt="Cliente che riceve un massaggio rilassante"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-secondary-100 to-transparent" />
+            </div>
 
-            <div className="relative">
-              <div className="w-16 h-16 bg-secondary-200 text-secondary-700 rounded-2xl flex items-center justify-center mb-6">
-                <Heart className="w-8 h-8" />
+            <div className="relative p-8 lg:p-10">
+              <div className="w-14 h-14 bg-secondary-200 text-secondary-700 rounded-2xl flex items-center justify-center mb-5 -mt-14 relative z-10 shadow-lg border-4 border-secondary-50">
+                <Heart className="w-7 h-7" />
               </div>
 
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
@@ -529,13 +611,21 @@ function DualCTASection({
             initial={{ opacity: 0, x: 20 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-50 to-primary-100 p-8 lg:p-10 border border-primary-200 hover:border-primary-300 transition-all"
+            className="group relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary-50 to-primary-100 border border-primary-200 hover:border-primary-300 transition-all"
           >
-            <div className="absolute top-0 right-0 w-32 h-32 bg-primary-200/50 rounded-full blur-3xl" />
+            {/* Image Section */}
+            <div className="relative h-48 overflow-hidden">
+              <img
+                src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?w=800&q=80"
+                alt="Professionista del massaggio al lavoro"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-primary-100 to-transparent" />
+            </div>
 
-            <div className="relative">
-              <div className="w-16 h-16 bg-primary-200 text-primary-700 rounded-2xl flex items-center justify-center mb-6">
-                <Briefcase className="w-8 h-8" />
+            <div className="relative p-8 lg:p-10">
+              <div className="w-14 h-14 bg-primary-200 text-primary-700 rounded-2xl flex items-center justify-center mb-5 -mt-14 relative z-10 shadow-lg border-4 border-primary-50">
+                <Briefcase className="w-7 h-7" />
               </div>
 
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
@@ -547,7 +637,7 @@ function DualCTASection({
                   "Nessun costo per iniziare (piano Free)",
                   "Gestisci orari e disponibilita",
                   "I clienti ti trovano automaticamente",
-                  "Guadagna in media 45€/ora netti",
+                  "Guadagna in media 45EUR/ora netti",
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-gray-700">
                     <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0" />

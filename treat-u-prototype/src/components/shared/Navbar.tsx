@@ -1,7 +1,18 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, User, LogOut, Calendar, Settings, Heart } from 'lucide-react';
+import {
+  Menu,
+  X,
+  User,
+  LogOut,
+  Calendar,
+  Settings,
+  Heart,
+  Search,
+  Briefcase,
+  LayoutDashboard,
+} from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAuthStore } from '../../store/authStore';
 import { Button } from './Button';
@@ -29,7 +40,7 @@ export function Navbar() {
       setScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check initial scroll position
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -39,56 +50,164 @@ export function Navbar() {
     setIsUserMenuOpen(false);
   };
 
+  // Colori basati sul ruolo
+  const roleColors = isProfessional
+    ? {
+        bg: 'bg-primary-600',
+        bgLight: 'bg-primary-50',
+        border: 'border-primary-200',
+        text: 'text-primary-700',
+        textLight: 'text-primary-600',
+      }
+    : {
+        bg: 'bg-secondary-600',
+        bgLight: 'bg-secondary-50',
+        border: 'border-secondary-200',
+        text: 'text-secondary-700',
+        textLight: 'text-secondary-600',
+      };
+
   return (
-    <nav className={cn(
-      'sticky top-0 z-30 transition-all duration-300',
-      scrolled || !isLandingPage
-        ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm'
-        : 'bg-transparent'
-    )}>
+    <nav
+      className={cn(
+        'sticky top-0 z-30 transition-all duration-300',
+        isAuthenticated && !isLandingPage
+          ? isProfessional
+            ? 'bg-primary-600 shadow-md'
+            : 'bg-secondary-600 shadow-md'
+          : scrolled || !isLandingPage
+          ? 'bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm'
+          : 'bg-transparent'
+      )}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center">
-            <Link to="/" className="flex items-center gap-2 group">
-              <div className="w-9 h-9 bg-gradient-to-br from-primary-600 to-primary-400 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow">
-                <span className="text-white font-bold text-sm">TU</span>
+          <div className="flex items-center gap-4">
+            <Link
+              to={isAuthenticated ? (isProfessional ? '/pro/dashboard' : '/dashboard') : '/'}
+              className="flex items-center gap-2 group"
+            >
+              <div
+                className={cn(
+                  'w-9 h-9 rounded-xl flex items-center justify-center shadow-md group-hover:shadow-lg transition-shadow',
+                  isAuthenticated && !isLandingPage
+                    ? 'bg-white/20'
+                    : isAuthenticated
+                    ? isProfessional
+                      ? 'bg-gradient-to-br from-primary-600 to-primary-400'
+                      : 'bg-gradient-to-br from-secondary-600 to-secondary-400'
+                    : 'bg-gradient-to-br from-primary-600 to-primary-400'
+                )}
+              >
+                <span
+                  className={cn(
+                    'font-bold text-sm',
+                    isAuthenticated && !isLandingPage ? 'text-white' : 'text-white'
+                  )}
+                >
+                  TU
+                </span>
               </div>
-              <span className="text-xl font-bold text-gray-900">
-                Treat<span className="text-primary-600">U</span>
+              <span
+                className={cn(
+                  'text-xl font-bold',
+                  isAuthenticated && !isLandingPage ? 'text-white' : 'text-gray-900'
+                )}
+              >
+                Treat
+                <span
+                  className={cn(
+                    isAuthenticated && !isLandingPage
+                      ? 'text-white/80'
+                      : isAuthenticated
+                      ? isProfessional
+                        ? 'text-primary-600'
+                        : 'text-secondary-600'
+                      : 'text-primary-600'
+                  )}
+                >
+                  U
+                </span>
               </span>
             </Link>
+
+            {/* Role Indicator - Big and Clear */}
+            {isAuthenticated && !isLandingPage && (
+              <div className="hidden sm:flex items-center">
+                <div className="h-6 w-px bg-white/30 mr-4" />
+                <div className="flex items-center gap-2 text-white">
+                  {isProfessional ? (
+                    <>
+                      <Briefcase className="w-5 h-5" />
+                      <span className="font-semibold">Area Professionista</span>
+                    </>
+                  ) : (
+                    <>
+                      <User className="w-5 h-5" />
+                      <span className="font-semibold">Area Cliente</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-6">
+          <div className="hidden md:flex items-center gap-2">
             {isAuthenticated ? (
               <>
                 {isProfessional ? (
+                  /* === PROFESSIONAL NAVIGATION === */
                   <>
-                    <NavLink to="/pro/dashboard" active={location.pathname === '/pro/dashboard'}>
+                    <NavLink
+                      to="/pro/dashboard"
+                      active={location.pathname === '/pro/dashboard'}
+                      isColored={!isLandingPage}
+                    >
                       Dashboard
                     </NavLink>
-                    <NavLink to="/pro/calendar" active={location.pathname === '/pro/calendar'}>
+                    <NavLink
+                      to="/pro/calendar"
+                      active={location.pathname === '/pro/calendar'}
+                      isColored={!isLandingPage}
+                    >
                       Calendario
                     </NavLink>
-                    <NavLink to="/pro/profile" active={location.pathname === '/pro/profile'}>
+                    <NavLink
+                      to="/pro/profile"
+                      active={location.pathname === '/pro/profile'}
+                      isColored={!isLandingPage}
+                    >
                       Profilo
                     </NavLink>
                   </>
                 ) : (
+                  /* === CLIENT NAVIGATION (semplificato) === */
                   <>
-                    <NavLink to="/search" active={location.pathname === '/search'}>
-                      Cerca
+                    <NavLink
+                      to="/dashboard"
+                      active={location.pathname === '/dashboard'}
+                      isColored={!isLandingPage}
+                    >
+                      Home
                     </NavLink>
-                    <NavLink to="/bookings" active={location.pathname === '/bookings'}>
+                    <NavLink
+                      to="/bookings"
+                      active={location.pathname.startsWith('/bookings')}
+                      isColored={!isLandingPage}
+                    >
                       Prenotazioni
-                    </NavLink>
-                    <NavLink to="/favorites" active={location.pathname === '/favorites'}>
-                      Preferiti
                     </NavLink>
                   </>
                 )}
+
+                <div
+                  className={cn(
+                    'w-px h-6 mx-2',
+                    isLandingPage ? 'bg-gray-200' : 'bg-white/30'
+                  )}
+                />
 
                 {/* Notifications */}
                 <NotificationDropdown />
@@ -97,13 +216,28 @@ export function Navbar() {
                 <div className="relative">
                   <button
                     onClick={() => setIsUserMenuOpen(!isUserMenuOpen)}
-                    className="flex items-center gap-2 p-1 rounded-lg hover:bg-gray-100 transition-colors"
+                    className={cn(
+                      'flex items-center gap-2 p-1.5 rounded-xl transition-colors',
+                      isLandingPage
+                        ? isProfessional
+                          ? 'hover:bg-primary-50'
+                          : 'hover:bg-secondary-50'
+                        : 'hover:bg-white/10'
+                    )}
                   >
                     <Avatar
                       src={user?.avatar}
                       name={`${user?.firstName} ${user?.lastName}`}
                       size="sm"
                     />
+                    <span
+                      className={cn(
+                        'font-medium text-sm hidden lg:block',
+                        isLandingPage ? 'text-gray-700' : 'text-white'
+                      )}
+                    >
+                      {user?.firstName}
+                    </span>
                   </button>
 
                   <AnimatePresence>
@@ -117,16 +251,46 @@ export function Navbar() {
                           initial={{ opacity: 0, scale: 0.95, y: -10 }}
                           animate={{ opacity: 1, scale: 1, y: 0 }}
                           exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                          className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-20"
+                          className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-20"
                         >
-                          <div className="px-4 py-2 border-b border-gray-100">
-                            <p className="font-medium text-gray-900">
-                              {user?.firstName} {user?.lastName}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                              {user?.email}
-                            </p>
+                          {/* User Info Header */}
+                          <div
+                            className={cn('px-4 py-3 mx-2 rounded-lg mb-2', roleColors.bgLight)}
+                          >
+                            <div className="flex items-center gap-3">
+                              <Avatar
+                                src={user?.avatar}
+                                name={`${user?.firstName} ${user?.lastName}`}
+                                size="md"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <p className="font-medium text-gray-900 truncate">
+                                  {user?.firstName} {user?.lastName}
+                                </p>
+                                <p className="text-xs text-gray-500 truncate">{user?.email}</p>
+                              </div>
+                            </div>
+                            <div
+                              className={cn(
+                                'mt-2 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold',
+                                roleColors.bg,
+                                'text-white'
+                              )}
+                            >
+                              {isProfessional ? (
+                                <>
+                                  <Briefcase className="w-3 h-3" />
+                                  Professionista
+                                </>
+                              ) : (
+                                <>
+                                  <User className="w-3 h-3" />
+                                  Cliente
+                                </>
+                              )}
+                            </div>
                           </div>
+
                           <UserMenuItem
                             icon={<User className="w-4 h-4" />}
                             onClick={() => {
@@ -134,8 +298,30 @@ export function Navbar() {
                               setIsUserMenuOpen(false);
                             }}
                           >
-                            Profilo
+                            Il mio profilo
                           </UserMenuItem>
+                          {!isProfessional && (
+                            <>
+                              <UserMenuItem
+                                icon={<Search className="w-4 h-4" />}
+                                onClick={() => {
+                                  navigate('/search');
+                                  setIsUserMenuOpen(false);
+                                }}
+                              >
+                                Cerca professionisti
+                              </UserMenuItem>
+                              <UserMenuItem
+                                icon={<Heart className="w-4 h-4" />}
+                                onClick={() => {
+                                  navigate('/favorites');
+                                  setIsUserMenuOpen(false);
+                                }}
+                              >
+                                I miei preferiti
+                              </UserMenuItem>
+                            </>
+                          )}
                           <UserMenuItem
                             icon={<Calendar className="w-4 h-4" />}
                             onClick={() => {
@@ -143,7 +329,7 @@ export function Navbar() {
                               setIsUserMenuOpen(false);
                             }}
                           >
-                            {isProfessional ? 'Calendario' : 'Prenotazioni'}
+                            {isProfessional ? 'Calendario' : 'Le mie prenotazioni'}
                           </UserMenuItem>
                           <UserMenuItem
                             icon={<Settings className="w-4 h-4" />}
@@ -170,21 +356,30 @@ export function Navbar() {
                 </div>
               </>
             ) : (
+              /* === VISITOR NAVIGATION === */
               <>
                 <NavLink to="/search" active={location.pathname === '/search'}>
-                  Trova Professionista
+                  Prenota un trattamento
                 </NavLink>
                 <NavLink to="/pro/register" active={location.pathname === '/pro/register'}>
-                  Diventa Professionista
+                  Lavora con noi
                 </NavLink>
+
+                <div className="w-px h-6 bg-gray-200 mx-3" />
+
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => navigate('/login')}
+                  className="border-gray-300"
                 >
                   Accedi
                 </Button>
-                <Button size="sm" onClick={() => navigate('/register')}>
+                <Button
+                  size="sm"
+                  onClick={() => navigate('/register')}
+                  className="bg-primary-600 hover:bg-primary-700"
+                >
                   Registrati
                 </Button>
               </>
@@ -192,10 +387,16 @@ export function Navbar() {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center gap-2">
+            {isAuthenticated && <NotificationDropdown />}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-lg text-gray-600 hover:bg-gray-100"
+              className={cn(
+                'p-2 rounded-lg',
+                isAuthenticated && !isLandingPage
+                  ? 'text-white hover:bg-white/10'
+                  : 'text-gray-600 hover:bg-gray-100'
+              )}
             >
               {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -210,63 +411,181 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white border-t border-gray-100"
+            className={cn(
+              'md:hidden border-t',
+              isAuthenticated && !isLandingPage
+                ? isProfessional
+                  ? 'bg-primary-700 border-primary-500'
+                  : 'bg-secondary-700 border-secondary-500'
+                : 'bg-white border-gray-100'
+            )}
           >
             <div className="px-4 py-4 space-y-2">
               {isAuthenticated ? (
                 <>
-                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg mb-4">
+                  {/* User Card with Role */}
+                  <div
+                    className={cn(
+                      'flex items-center gap-3 p-4 rounded-xl mb-4',
+                      isLandingPage ? roleColors.bgLight : 'bg-white/10'
+                    )}
+                  >
                     <Avatar
                       src={user?.avatar}
                       name={`${user?.firstName} ${user?.lastName}`}
-                      size="md"
+                      size="lg"
                     />
-                    <div>
-                      <p className="font-medium text-gray-900">
+                    <div className="flex-1">
+                      <p
+                        className={cn(
+                          'font-semibold',
+                          isLandingPage ? 'text-gray-900' : 'text-white'
+                        )}
+                      >
                         {user?.firstName} {user?.lastName}
                       </p>
-                      <p className="text-sm text-gray-500">{user?.email}</p>
+                      <div
+                        className={cn(
+                          'mt-1 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold',
+                          isLandingPage ? roleColors.bg : 'bg-white/20',
+                          'text-white'
+                        )}
+                      >
+                        {isProfessional ? (
+                          <>
+                            <Briefcase className="w-3 h-3" />
+                            Professionista
+                          </>
+                        ) : (
+                          <>
+                            <User className="w-3 h-3" />
+                            Cliente
+                          </>
+                        )}
+                      </div>
                     </div>
                   </div>
+
                   {isProfessional ? (
+                    /* Professional Mobile Links */
                     <>
-                      <MobileNavLink to="/pro/dashboard" onClick={() => setIsMenuOpen(false)}>
+                      <MobileNavLink
+                        to="/pro/dashboard"
+                        icon={<LayoutDashboard className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname === '/pro/dashboard'}
+                        isColored={!isLandingPage}
+                      >
                         Dashboard
                       </MobileNavLink>
-                      <MobileNavLink to="/pro/calendar" onClick={() => setIsMenuOpen(false)}>
+                      <MobileNavLink
+                        to="/pro/calendar"
+                        icon={<Calendar className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname === '/pro/calendar'}
+                        isColored={!isLandingPage}
+                      >
                         Calendario
                       </MobileNavLink>
-                      <MobileNavLink to="/pro/profile" onClick={() => setIsMenuOpen(false)}>
-                        Profilo
+                      <MobileNavLink
+                        to="/pro/profile"
+                        icon={<User className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname === '/pro/profile'}
+                        isColored={!isLandingPage}
+                      >
+                        Il mio Profilo
                       </MobileNavLink>
                     </>
                   ) : (
+                    /* Client Mobile Links */
                     <>
-                      <MobileNavLink to="/search" onClick={() => setIsMenuOpen(false)}>
-                        Cerca Professionista
+                      <MobileNavLink
+                        to="/dashboard"
+                        icon={<LayoutDashboard className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname === '/dashboard'}
+                        isColored={!isLandingPage}
+                      >
+                        Home
                       </MobileNavLink>
-                      <MobileNavLink to="/bookings" onClick={() => setIsMenuOpen(false)}>
+                      <MobileNavLink
+                        to="/bookings"
+                        icon={<Calendar className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname.startsWith('/bookings')}
+                        isColored={!isLandingPage}
+                      >
                         Le mie Prenotazioni
                       </MobileNavLink>
-                      <MobileNavLink to="/favorites" onClick={() => setIsMenuOpen(false)}>
+                      <MobileNavLink
+                        to="/search"
+                        icon={<Search className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname === '/search'}
+                        isColored={!isLandingPage}
+                      >
+                        Cerca Professionista
+                      </MobileNavLink>
+                      <MobileNavLink
+                        to="/favorites"
+                        icon={<Heart className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname === '/favorites'}
+                        isColored={!isLandingPage}
+                      >
                         I miei Preferiti
                       </MobileNavLink>
                     </>
                   )}
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-left px-4 py-3 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+
+                  <div
+                    className={cn(
+                      'pt-2 mt-2 border-t',
+                      isLandingPage ? 'border-gray-100' : 'border-white/20'
+                    )}
                   >
-                    Esci
-                  </button>
+                    <MobileNavLink
+                      to="/settings"
+                      icon={<Settings className="w-5 h-5" />}
+                      onClick={() => setIsMenuOpen(false)}
+                      active={location.pathname === '/settings'}
+                      isColored={!isLandingPage}
+                    >
+                      Impostazioni
+                    </MobileNavLink>
+                    <button
+                      onClick={handleLogout}
+                      className={cn(
+                        'w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
+                        isLandingPage
+                          ? 'text-red-600 hover:bg-red-50'
+                          : 'text-red-300 hover:bg-white/10'
+                      )}
+                    >
+                      <LogOut className="w-5 h-5" />
+                      Esci
+                    </button>
+                  </div>
                 </>
               ) : (
+                /* Visitor Mobile Menu */
                 <>
-                  <MobileNavLink to="/search" onClick={() => setIsMenuOpen(false)}>
-                    Trova Professionista
+                  <MobileNavLink
+                    to="/search"
+                    icon={<Search className="w-5 h-5" />}
+                    onClick={() => setIsMenuOpen(false)}
+                    active={location.pathname === '/search'}
+                  >
+                    Prenota un trattamento
                   </MobileNavLink>
-                  <MobileNavLink to="/pro/register" onClick={() => setIsMenuOpen(false)}>
-                    Diventa Professionista
+                  <MobileNavLink
+                    to="/pro/register"
+                    icon={<Briefcase className="w-5 h-5" />}
+                    onClick={() => setIsMenuOpen(false)}
+                    active={location.pathname === '/pro/register'}
+                  >
+                    Lavora con noi
                   </MobileNavLink>
                   <div className="pt-4 space-y-2">
                     <Button
@@ -280,7 +599,7 @@ export function Navbar() {
                       Accedi
                     </Button>
                     <Button
-                      className="w-full"
+                      className="w-full bg-primary-600 hover:bg-primary-700"
                       onClick={() => {
                         navigate('/register');
                         setIsMenuOpen(false);
@@ -306,18 +625,26 @@ export function Navbar() {
 function NavLink({
   to,
   active,
+  isColored,
   children,
 }: {
   to: string;
   active: boolean;
+  isColored?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Link
       to={to}
       className={cn(
-        'text-sm font-medium transition-colors',
-        active ? 'text-primary-600' : 'text-gray-600 hover:text-gray-900'
+        'px-3 py-2 rounded-lg text-sm font-medium transition-colors',
+        isColored
+          ? active
+            ? 'bg-white/20 text-white'
+            : 'text-white/80 hover:text-white hover:bg-white/10'
+          : active
+          ? 'bg-gray-100 text-gray-900'
+          : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
       )}
     >
       {children}
@@ -328,18 +655,34 @@ function NavLink({
 function MobileNavLink({
   to,
   onClick,
+  icon,
+  active,
+  isColored,
   children,
 }: {
   to: string;
   onClick: () => void;
+  icon?: React.ReactNode;
+  active?: boolean;
+  isColored?: boolean;
   children: React.ReactNode;
 }) {
   return (
     <Link
       to={to}
       onClick={onClick}
-      className="block px-4 py-3 text-gray-700 hover:bg-gray-50 rounded-lg transition-colors"
+      className={cn(
+        'flex items-center gap-3 px-4 py-3 rounded-lg transition-colors',
+        isColored
+          ? active
+            ? 'bg-white/20 text-white font-medium'
+            : 'text-white/80 hover:text-white hover:bg-white/10'
+          : active
+          ? 'bg-gray-100 text-gray-900 font-medium'
+          : 'text-gray-700 hover:bg-gray-50'
+      )}
     >
+      {icon}
       {children}
     </Link>
   );
@@ -360,10 +703,8 @@ function UserMenuItem({
     <button
       onClick={onClick}
       className={cn(
-        'w-full flex items-center gap-3 px-4 py-2 text-sm transition-colors',
-        danger
-          ? 'text-red-600 hover:bg-red-50'
-          : 'text-gray-700 hover:bg-gray-50'
+        'w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors',
+        danger ? 'text-red-600 hover:bg-red-50' : 'text-gray-700 hover:bg-gray-50'
       )}
     >
       {icon}
