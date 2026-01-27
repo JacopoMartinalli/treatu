@@ -18,6 +18,7 @@ import { BookingDetailPage } from './pages/client/BookingDetailPage';
 import { ProfilePage } from './pages/client/ProfilePage';
 import { SettingsPage } from './pages/client/SettingsPage';
 import { FavoritesPage } from './pages/client/FavoritesPage';
+import { ClientDashboardPage } from './pages/client/DashboardPage';
 
 // Professional Pages
 import { RegisterProfessionalPage } from './pages/professional/RegisterProfessionalPage';
@@ -68,6 +69,7 @@ function App() {
           <Route path="/professional/:id" element={<ProfessionalProfilePage />} />
 
           {/* Client Routes */}
+          <Route path="/dashboard" element={<ClientDashboardPage />} />
           <Route path="/booking" element={<BookingPage />} />
           <Route path="/bookings" element={<BookingsListPage />} />
           <Route path="/bookings/:id" element={<BookingDetailPage />} />

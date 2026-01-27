@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, User, Briefcase } from 'lucide-react';
 import { Button, Input, Card } from '../../components/shared';
 import { useAuthStore } from '../../store/authStore';
 import toast from 'react-hot-toast';
@@ -202,6 +202,47 @@ export function LoginPage() {
             {loginType === 'client' && ' Verrai autenticato come cliente demo.'}
             {loginType === 'professional' && ' Verrai autenticato come Giulia Rossi.'}
           </p>
+        </div>
+
+        {/* Quick Access Buttons */}
+        <div className="mt-6">
+          <p className="text-center text-sm text-gray-500 mb-4">
+            Accesso rapido alle aree
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={async () => {
+                const success = await loginAsClient('demo@cliente.it', 'demo');
+                if (success) {
+                  toast.success('Accesso come cliente demo!');
+                  navigate('/dashboard');
+                }
+              }}
+              className="flex items-center justify-center gap-2"
+              isLoading={isLoading}
+            >
+              <User className="w-5 h-5" />
+              Area Cliente
+            </Button>
+            <Button
+              variant="outline"
+              size="lg"
+              onClick={async () => {
+                const success = await loginAsProfessional('demo@pro.it', 'demo');
+                if (success) {
+                  toast.success('Accesso come professionista demo!');
+                  navigate('/pro/dashboard');
+                }
+              }}
+              className="flex items-center justify-center gap-2"
+              isLoading={isLoading}
+            >
+              <Briefcase className="w-5 h-5" />
+              Area Professionisti
+            </Button>
+          </div>
         </div>
       </motion.div>
     </div>

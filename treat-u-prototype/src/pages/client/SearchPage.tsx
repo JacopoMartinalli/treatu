@@ -11,8 +11,12 @@ import {
   Clock,
   SlidersHorizontal,
   X,
+  Sparkles,
+  Heart,
+  ArrowRight,
 } from 'lucide-react';
 import { Button, Input, Card, Badge, Rating, Select, EmptyState } from '../../components/shared';
+import { TreatmentFinderWizard, WizardData } from '../../components/search';
 import { mockProfessionals, serviceCategories } from '../../data/mockData';
 import { Professional, ServiceCategory } from '../../types';
 import { format } from 'date-fns';
@@ -26,6 +30,11 @@ export function SearchPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
 
+  // Wizard state
+  const [showWizard, setShowWizard] = useState(false);
+  const [wizardCompleted, setWizardCompleted] = useState(false);
+  const [wizardData, setWizardData] = useState<WizardData | null>(null);
+
   // Filter state
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory | ''>(
@@ -36,6 +45,22 @@ export function SearchPage() {
   const [onlyVerified, setOnlyVerified] = useState(false);
   const [sortBy, setSortBy] = useState<'rating' | 'price' | 'availability'>('rating');
   const [showFilters, setShowFilters] = useState(false);
+
+  // Handle wizard completion
+  const handleWizardComplete = (data: WizardData) => {
+    setWizardData(data);
+    setWizardCompleted(true);
+    setShowWizard(false);
+    // Apply filters based on wizard data
+    if (data.preferences.priceRange === 'budget') {
+      setPriceRange([0, 40]);
+    } else if (data.preferences.priceRange === 'mid') {
+      setPriceRange([40, 70]);
+    } else {
+      setPriceRange([70, 200]);
+    }
+    setOnlyVerified(true);
+  };
 
   // Filter and sort professionals
   const filteredProfessionals = useMemo(() => {
@@ -119,6 +144,143 @@ export function SearchPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Treatment Finder Wizard Modal */}
+      <AnimatePresence>
+        {showWizard && (
+          <TreatmentFinderWizard
+            onComplete={handleWizardComplete}
+            onClose={() => setShowWizard(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Hero Section - Wizard CTA */}
+      {!wizardCompleted && (
+        <div className="bg-gradient-to-br from-secondary-50 via-white to-primary-50 border-b border-gray-100">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
+            <div className="flex flex-col lg:flex-row items-center gap-8">
+              <div className="flex-1 text-center lg:text-left">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="inline-flex items-center gap-2 bg-white border border-secondary-200 rounded-full px-4 py-2 mb-4 shadow-sm"
+                >
+                  <Sparkles className="w-4 h-4 text-secondary-600" />
+                  <span className="text-sm font-medium text-secondary-700">
+                    Nuovo! Trova il trattamento perfetto
+                  </span>
+                </motion.div>
+
+                <motion.h1
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 }}
+                  className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4"
+                >
+                  Non sai da dove iniziare?
+                </motion.h1>
+
+                <motion.p
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.2 }}
+                  className="text-lg text-gray-600 mb-6 max-w-xl mx-auto lg:mx-0"
+                >
+                  Rispondi a poche domande e ti aiuteremo a trovare il professionista
+                  e il trattamento piu adatto alle tue esigenze.
+                </motion.p>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="flex flex-col sm:flex-row items-center gap-4 justify-center lg:justify-start"
+                >
+                  <Button
+                    size="lg"
+                    onClick={() => setShowWizard(true)}
+                    className="bg-secondary-600 hover:bg-secondary-700"
+                    rightIcon={<ArrowRight className="w-5 h-5" />}
+                  >
+                    Inizia il questionario
+                  </Button>
+                  <span className="text-sm text-gray-500">
+                    Solo 2 minuti - 4 semplici domande
+                  </span>
+                </motion.div>
+              </div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.2 }}
+                className="hidden lg:block w-80"
+              >
+                <div className="relative">
+                  <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
+                        <Heart className="w-6 h-6 text-secondary-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900">Questionario guidato</h3>
+                        <p className="text-sm text-gray-500">Personalizzato per te</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      {['Obiettivo del trattamento', 'Zone del corpo', 'Sintomi specifici', 'Preferenze'].map((step, i) => (
+                        <div key={step} className="flex items-center gap-3">
+                          <div className="w-6 h-6 rounded-full bg-secondary-100 text-secondary-600 flex items-center justify-center text-xs font-semibold">
+                            {i + 1}
+                          </div>
+                          <span className="text-sm text-gray-600">{step}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="absolute -bottom-4 -right-4 bg-primary-100 text-primary-700 px-3 py-1.5 rounded-full text-sm font-semibold shadow-lg">
+                    100% Gratuito
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Wizard Results Banner */}
+      {wizardCompleted && wizardData && (
+        <div className="bg-gradient-to-r from-secondary-600 to-secondary-700 text-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                  <CheckCircle className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="font-semibold">Ricerca personalizzata attiva</p>
+                  <p className="text-sm text-white/80">
+                    Mostriamo i professionisti piu adatti alle tue esigenze
+                  </p>
+                </div>
+              </div>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => {
+                  setWizardCompleted(false);
+                  setWizardData(null);
+                  resetFilters();
+                }}
+                className="border-white/30 text-white hover:bg-white/10"
+              >
+                Rimuovi filtri personalizzati
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Search Header */}
       <div className="bg-white border-b border-gray-200 sticky top-16 z-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
