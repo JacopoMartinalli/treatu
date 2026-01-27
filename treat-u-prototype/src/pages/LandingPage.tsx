@@ -17,6 +17,11 @@ import {
   Zap,
   Shield,
   Euro,
+  MessageCircle,
+  CreditCard,
+  ListChecks,
+  Search,
+  Check,
 } from 'lucide-react';
 import { Button } from '../components/shared';
 
@@ -33,9 +38,10 @@ export function LandingPage() {
         onSearch={() => navigate('/search')}
         onBecomePro={() => navigate('/pro/register')}
       />
-      <ProblemSolutionSection />
+      <BenefitsSection />
       <HowItWorksSection />
       <StatsSection />
+      <PricingSection onBecomePro={() => navigate('/pro/register')} />
       <DualCTASection
         onClientClick={() => navigate('/register')}
         onProClick={() => navigate('/pro/register')}
@@ -94,7 +100,7 @@ function HeroSection({
           >
             <span className="w-2 h-2 bg-primary-500 rounded-full animate-pulse" />
             <span className="text-sm font-medium text-primary-700">
-              La nuova era del benessere a domicilio
+              Guadagna extra, anche se hai gia un lavoro
             </span>
           </motion.div>
 
@@ -107,22 +113,43 @@ function HeroSection({
           >
             Il tuo talento.
             <br />
-            <span className="text-primary-700">I loro spazi.</span>
+            <span className="text-primary-700">Dove e quando vuoi.</span>
             <br />
             <span className="text-secondary-600">Senza vincoli.</span>
           </motion.h1>
 
-          {/* Subheadline */}
-          <motion.p
+          {/* Subheadline - 3 value props */}
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="text-lg sm:text-xl text-gray-600 mb-10 max-w-2xl leading-relaxed"
+            className="flex flex-col gap-3 mb-10 max-w-2xl"
           >
-            TreatU connette professionisti del benessere con clienti che cercano
-            trattamenti a domicilio. <span className="text-primary-700 font-medium">Nessuna sede necessaria</span>,
-            orari flessibili, massima liberta.
-          </motion.p>
+            <div className="flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-xl px-5 py-3 border border-gray-100 shadow-sm">
+              <div className="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Users className="w-5 h-5 text-primary-600" />
+              </div>
+              <p className="text-base sm:text-lg text-gray-700">
+                Lavora quando sei <span className="font-semibold text-gray-900">libero</span>, metti disponibilita e l'app <span className="font-semibold text-primary-700">trova i clienti</span> per te.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-xl px-5 py-3 border border-gray-100 shadow-sm">
+              <div className="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Calendar className="w-5 h-5 text-primary-600" />
+              </div>
+              <p className="text-base sm:text-lg text-gray-700">
+                La tua <span className="font-semibold text-primary-700">agenda digitale</span> sempre a portata di mano: <span className="font-semibold text-gray-900">appuntamenti, clienti e pagamenti</span>.
+              </p>
+            </div>
+            <div className="flex items-center gap-3 bg-white/60 backdrop-blur-sm rounded-xl px-5 py-3 border border-gray-100 shadow-sm">
+              <div className="w-9 h-9 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <Home className="w-5 h-5 text-primary-600" />
+              </div>
+              <p className="text-base sm:text-lg text-gray-700">
+                Effettua <span className="font-semibold text-gray-900">trattamenti a domicilio</span>, nessuna sede richiesta — lavora in <span className="font-semibold text-primary-700">liberta</span> con i tuoi orari.
+              </p>
+            </div>
+          </motion.div>
 
           {/* CTA Buttons */}
           <motion.div
@@ -133,20 +160,20 @@ function HeroSection({
           >
             <Button
               size="lg"
-              onClick={onSearch}
+              onClick={onBecomePro}
               className="group"
             >
-              Prenota un trattamento
+              Inizia a guadagnare
               <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
             </Button>
             <Button
               variant="outline"
               size="lg"
-              onClick={onBecomePro}
+              onClick={onSearch}
               className="border-primary-300 text-primary-700 hover:bg-primary-50"
             >
-              <Briefcase className="w-5 h-5 mr-2" />
-              Offri i tuoi servizi
+              <Search className="w-5 h-5 mr-2" />
+              Prenota un trattamento
             </Button>
           </motion.div>
 
@@ -213,25 +240,46 @@ function HeroSection({
 }
 
 // ============================================
-// PROBLEM/SOLUTION SECTION
+// BENEFITS SECTION (6 key selling points)
 // ============================================
 
-function ProblemSolutionSection() {
-  const problems = [
+function BenefitsSection() {
+  const benefits = [
     {
-      icon: Home,
-      problem: "Non hai uno studio o una sede?",
-      solution: "Lavora direttamente a casa dei tuoi clienti. Zero costi fissi, massima flessibilita.",
+      icon: Euro,
+      title: "Guadagna extra",
+      description: "Hai gia un lavoro? Perfetto. Con TreatU guadagni nei tuoi momenti liberi, senza vincoli.",
+      highlight: "anche se hai gia un lavoro",
     },
     {
-      icon: Clock,
-      problem: "Hai gia un lavoro o impegni?",
-      solution: "Imposta la tua disponibilita come preferisci. Anche solo qualche ora a settimana.",
+      icon: MapPin,
+      title: "Dove e quando vuoi",
+      description: "Scegli tu la zona, i giorni e gli orari. Lavora vicino a casa o dove preferisci, in totale liberta.",
+      highlight: "tu decidi tutto",
     },
     {
-      icon: Users,
-      problem: "Fai fatica a trovare clienti?",
-      solution: "I clienti ti trovano sulla piattaforma. Tu devi solo accettare le prenotazioni.",
+      icon: Calendar,
+      title: "Calendario intelligente",
+      description: "Imposta la tua disponibilita e il calendario si aggiorna in automatico. L'app trova i clienti per te.",
+      highlight: "zero sbattimenti",
+    },
+    {
+      icon: Search,
+      title: "I clienti ti trovano",
+      description: "Non devi cercare clienti o fare pubblicita. I clienti nella tua zona ti trovano e prenotano direttamente.",
+      highlight: "basta passaparola",
+    },
+    {
+      icon: CreditCard,
+      title: "Pagamenti nell'app",
+      description: "Gestisci tutti i pagamenti direttamente nell'app. Tutto tracciato, preciso e senza perdere tempo.",
+      highlight: "niente contanti, niente problemi",
+    },
+    {
+      icon: MessageCircle,
+      title: "Chat con i clienti",
+      description: "Comunica con i tuoi clienti in chat per organizzare i dettagli. Tutto in un unico posto, semplice e veloce.",
+      highlight: "comunicazione diretta",
     },
   ];
 
@@ -248,16 +296,15 @@ function ProblemSolutionSection() {
             Perche TreatU
           </span>
           <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-            Costruito per chi vuole lavorare in liberta
+            Tutto quello che ti serve per lavorare in liberta
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Sappiamo le difficolta di chi inizia o di chi vuole arrotondare.
-            TreatU e la soluzione.
+            Basta complicazioni. TreatU ti da gli strumenti per guadagnare facendo quello che ami, nei tempi che scegli tu.
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-8">
-          {problems.map((item, index) => (
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {benefits.map((item, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 20 }}
@@ -270,16 +317,41 @@ function ProblemSolutionSection() {
                 <div className="w-14 h-14 bg-primary-100 text-primary-600 rounded-xl flex items-center justify-center mb-6 group-hover:bg-primary-600 group-hover:text-white transition-colors">
                   <item.icon className="w-7 h-7" />
                 </div>
-                <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                  {item.problem}
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                  {item.title}
                 </h3>
-                <p className="text-gray-600 leading-relaxed">
-                  {item.solution}
+                <p className="text-gray-600 leading-relaxed mb-3">
+                  {item.description}
                 </p>
+                <span className="inline-block text-sm font-medium text-primary-600 bg-primary-50 px-3 py-1 rounded-full">
+                  {item.highlight}
+                </span>
               </div>
             </motion.div>
           ))}
         </div>
+
+        {/* Extra: Listino personalizzato callout */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="mt-12 bg-gradient-to-r from-primary-50 to-secondary-50 rounded-2xl p-8 md:p-10 border border-primary-100"
+        >
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div className="w-16 h-16 bg-primary-100 text-primary-600 rounded-2xl flex items-center justify-center flex-shrink-0">
+              <ListChecks className="w-8 h-8" />
+            </div>
+            <div className="text-center md:text-left">
+              <h3 className="text-xl font-bold text-gray-900 mb-2">
+                Crea il tuo listino personalizzato
+              </h3>
+              <p className="text-gray-600 max-w-2xl">
+                Decidi tu cosa offrire e a che prezzo. Crea il tuo listino servizi su misura, aggiungendo trattamenti, durate e tariffe. I clienti vedono subito cosa offri e prenotano in un click.
+              </p>
+            </div>
+          </div>
+        </motion.div>
       </div>
     </section>
   );
@@ -290,7 +362,7 @@ function ProblemSolutionSection() {
 // ============================================
 
 function HowItWorksSection() {
-  const [activeTab, setActiveTab] = useState<'client' | 'pro'>('client');
+  const [activeTab, setActiveTab] = useState<'client' | 'pro'>('pro');
 
   const clientSteps = [
     {
@@ -313,18 +385,18 @@ function HowItWorksSection() {
   const proSteps = [
     {
       step: "01",
-      title: "Crea il tuo profilo",
-      description: "Registrati, aggiungi i tuoi servizi, i prezzi e le zone che copri.",
+      title: "Crea profilo e listino",
+      description: "Registrati, crea il tuo listino personalizzato con servizi, prezzi e zone che copri.",
     },
     {
       step: "02",
-      title: "Imposta la disponibilita",
-      description: "Decidi quando sei disponibile. Cambia gli orari quando vuoi.",
+      title: "Imposta quando sei libero",
+      description: "Il calendario si adatta a te. Lavora quando vuoi, anche solo qualche ora a settimana.",
     },
     {
       step: "03",
-      title: "Ricevi prenotazioni",
-      description: "I clienti ti trovano e prenotano. Tu confermi e vai a lavorare.",
+      title: "Ricevi clienti e guadagna",
+      description: "L'app trova i clienti per te. Tu confermi, vai a lavorare e ricevi il pagamento in app.",
     },
   ];
 
@@ -349,16 +421,6 @@ function HowItWorksSection() {
           {/* Tab Switcher */}
           <div className="inline-flex bg-white rounded-full p-1.5 shadow-sm border border-gray-200">
             <button
-              onClick={() => setActiveTab('client')}
-              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
-                activeTab === 'client'
-                  ? 'bg-primary-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-900'
-              }`}
-            >
-              Per i Clienti
-            </button>
-            <button
               onClick={() => setActiveTab('pro')}
               className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
                 activeTab === 'pro'
@@ -367,6 +429,16 @@ function HowItWorksSection() {
               }`}
             >
               Per i Professionisti
+            </button>
+            <button
+              onClick={() => setActiveTab('client')}
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                activeTab === 'client'
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Per i Clienti
             </button>
           </div>
         </motion.div>
@@ -453,6 +525,167 @@ function StatsSection() {
 }
 
 // ============================================
+// PRICING SECTION
+// ============================================
+
+function PricingSection({ onBecomePro }: { onBecomePro: () => void }) {
+  const [billingPeriod, setBillingPeriod] = useState<'monthly' | 'quarterly' | 'yearly'>('monthly');
+
+  // Placeholder prices — da definire
+  const pricing = {
+    monthly: { price: 'X,XX', period: '/mese', savings: null },
+    quarterly: { price: 'X,XX', period: '/mese', savings: 'Risparmi il 15%' },
+    yearly: { price: 'X,XX', period: '/mese', savings: 'Risparmi il 30%' },
+  };
+
+  const currentPlan = pricing[billingPeriod];
+
+  const features = [
+    "Profilo professionale completo",
+    "Calendario intelligente",
+    "L'app trova i clienti per te",
+    "Chat con i clienti",
+    "Pagamenti in-app",
+    "Listino personalizzato",
+    "Visibilita nella ricerca",
+    "Statistiche e report",
+    "Supporto prioritario",
+  ];
+
+  return (
+    <section className="py-24 bg-warm-100/50">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-12"
+        >
+          <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-4">
+            Abbonamento
+          </span>
+          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
+            Investi nel tuo lavoro, risparmia sul lungo periodo
+          </h2>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Scegli il piano che fa per te. Piu a lungo ti abboni, piu risparmi.
+          </p>
+        </motion.div>
+
+        {/* Billing Period Switcher */}
+        <div className="flex justify-center mb-12">
+          <div className="inline-flex bg-white rounded-full p-1.5 shadow-sm border border-gray-200">
+            <button
+              onClick={() => setBillingPeriod('monthly')}
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                billingPeriod === 'monthly'
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              Mensile
+            </button>
+            <button
+              onClick={() => setBillingPeriod('quarterly')}
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all relative ${
+                billingPeriod === 'quarterly'
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              3 Mesi
+              <span className="absolute -top-2 -right-2 bg-secondary-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                -15%
+              </span>
+            </button>
+            <button
+              onClick={() => setBillingPeriod('yearly')}
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all relative ${
+                billingPeriod === 'yearly'
+                  ? 'bg-primary-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              12 Mesi
+              <span className="absolute -top-2 -right-2 bg-secondary-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                -30%
+              </span>
+            </button>
+          </div>
+        </div>
+
+        {/* Pricing Card */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="max-w-lg mx-auto"
+        >
+          <div className="bg-white rounded-3xl shadow-xl border border-primary-100 overflow-hidden">
+            {/* Header */}
+            <div className="bg-gradient-to-br from-primary-600 to-primary-700 px-8 py-10 text-center">
+              <h3 className="text-xl font-bold text-white mb-2">
+                TreatU Pro
+              </h3>
+              <div className="flex items-baseline justify-center gap-1">
+                <span className="text-5xl font-bold text-white">
+                  {currentPlan.price}
+                </span>
+                <span className="text-primary-200 text-lg">
+                  {currentPlan.period}
+                </span>
+              </div>
+              {currentPlan.savings && (
+                <motion.span
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="inline-block mt-3 bg-white/20 text-white text-sm font-medium px-4 py-1.5 rounded-full"
+                >
+                  {currentPlan.savings}
+                </motion.span>
+              )}
+              <p className="text-primary-200 text-sm mt-4">
+                Prezzo in fase di definizione
+              </p>
+            </div>
+
+            {/* Features */}
+            <div className="px-8 py-8">
+              <p className="text-sm font-semibold text-gray-900 mb-5 uppercase tracking-wider">
+                Tutto incluso
+              </p>
+              <ul className="space-y-4">
+                {features.map((feature, i) => (
+                  <li key={i} className="flex items-center gap-3">
+                    <div className="w-5 h-5 bg-primary-100 rounded-full flex items-center justify-center flex-shrink-0">
+                      <Check className="w-3.5 h-3.5 text-primary-600" />
+                    </div>
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <Button
+                size="lg"
+                onClick={onBecomePro}
+                className="w-full mt-8 group"
+              >
+                Inizia ora
+                <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+              </Button>
+
+              <p className="text-center text-sm text-gray-500 mt-4">
+                Nessun vincolo. Cancella quando vuoi.
+              </p>
+            </div>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}
+
+// ============================================
 // DUAL CTA SECTION
 // ============================================
 
@@ -503,7 +736,7 @@ function DualCTASection({
                 {[
                   "Professionisti verificati e recensiti",
                   "Prenoti in pochi click",
-                  "Il massaggiatore viene da te",
+                  "Il professionista viene da te",
                   "Risparmia fino al 30% rispetto ai centri",
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-gray-700">
@@ -539,15 +772,15 @@ function DualCTASection({
               </div>
 
               <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                Offri i tuoi servizi?
+                Vuoi guadagnare extra?
               </h3>
 
               <ul className="space-y-3 mb-8">
                 {[
-                  "Nessun costo per iniziare (piano Free)",
-                  "Gestisci orari e disponibilita",
-                  "I clienti ti trovano automaticamente",
-                  "Guadagna in media 45€/ora netti",
+                  "Lavora quando sei libero, anche part-time",
+                  "L'app trova i clienti per te",
+                  "Pagamenti tracciati e sicuri",
+                  "Chat diretta con i clienti",
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-gray-700">
                     <CheckCircle className="w-5 h-5 text-primary-600 flex-shrink-0" />
@@ -668,28 +901,32 @@ function FAQSection() {
 
   const faqs = [
     {
-      question: "Quanto costa usare TreatU come professionista?",
-      answer: "Puoi iniziare gratis con il piano Free. Tratteniamo una piccola commissione solo quando completi un trattamento. Il piano Premium offre piu visibilita e funzionalita avanzate a un canone mensile.",
+      question: "Quanto costa l'abbonamento TreatU Pro?",
+      answer: "I prezzi sono in fase di definizione. Offriamo un abbonamento mensile e piani scontati a 3 e 12 mesi per risparmiare. Nessun vincolo: puoi cancellare quando vuoi.",
+    },
+    {
+      question: "Posso usare TreatU anche se ho gia un lavoro?",
+      answer: "Assolutamente si. TreatU e pensata per chi vuole guadagnare extra nei momenti liberi. Tu imposti la tua disponibilita e lavori solo quando vuoi.",
     },
     {
       question: "Come vengono verificati i professionisti?",
       answer: "Verifichiamo l'identita, la P.IVA e le certificazioni di ogni professionista. Inoltre, il sistema di recensioni permette ai clienti di valutare ogni esperienza.",
     },
     {
-      question: "Posso scegliere quando lavorare?",
-      answer: "Assolutamente si. Tu imposti la tua disponibilita nel calendario e la modifichi quando vuoi. Puoi lavorare full-time, part-time, solo nei weekend - decidi tu.",
+      question: "Come funzionano i pagamenti?",
+      answer: "I clienti pagano tramite l'app. Tu ricevi il pagamento direttamente sul tuo conto, tutto tracciato e senza dover gestire contanti.",
     },
     {
-      question: "Come funziona il pagamento?",
-      answer: "I clienti pagano tramite la piattaforma. Tu ricevi il pagamento entro 3 giorni lavorativi dal completamento del trattamento, al netto della commissione.",
+      question: "Come trovo i clienti?",
+      answer: "Non devi cercarli tu. L'app mostra il tuo profilo ai clienti nella tua zona. Loro prenotano e tu ricevi una notifica. Semplice.",
     },
     {
       question: "Cosa succede se un cliente cancella?",
       answer: "La nostra policy prevede cancellazione gratuita fino a 24 ore prima. Cancellazioni tardive comportano un rimborso parziale al professionista per il tempo riservato.",
     },
     {
-      question: "Devo portare l'attrezzatura?",
-      answer: "Si, i professionisti portano tutto il necessario per il trattamento (lettino portatile, oli, asciugamani). E parte del servizio a domicilio.",
+      question: "Posso creare il mio listino personalizzato?",
+      answer: "Si, decidi tu quali servizi offrire, a che prezzo e con quale durata. Il tuo listino e completamente personalizzabile e i clienti lo vedono sul tuo profilo.",
     },
   ];
 
@@ -779,28 +1016,27 @@ function FinalCTASection({
           viewport={{ once: true }}
         >
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-white mb-6">
-            Pronto a iniziare?
+            Pronto a guadagnare con il tuo talento?
           </h2>
           <p className="text-lg sm:text-xl text-primary-200 mb-10 max-w-2xl mx-auto">
-            Unisciti a TreatU oggi. Che tu voglia rilassarti o far crescere
-            la tua attivita, siamo qui per te.
+            Unisciti a TreatU oggi. Lavora quando vuoi, dove vuoi, e lascia che l'app trovi i clienti per te.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button
               size="lg"
-              onClick={onGetStarted}
+              onClick={onBecomePro}
               className="bg-white text-primary-700 hover:bg-gray-100"
             >
-              Prenota un trattamento
+              Inizia a guadagnare
             </Button>
             <Button
               size="lg"
               variant="outline"
-              onClick={onBecomePro}
+              onClick={onGetStarted}
               className="border-white/30 text-white hover:bg-white/10"
             >
-              Diventa professionista
+              Prenota un trattamento
             </Button>
           </div>
         </motion.div>

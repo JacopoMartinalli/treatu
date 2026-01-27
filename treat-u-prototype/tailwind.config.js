@@ -7,33 +7,33 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Verde bosco - Primario (professionalità, natura, equilibrio)
+        // Deep Purple - Primario (eleganza, professionalità, modernità)
         primary: {
-          50: '#f3f6f4',
-          100: '#e4ebe6',
-          200: '#c9d7ce',
-          300: '#a3bba9',
-          400: '#789c81',
-          500: '#5a8263',
-          600: '#476a50',
-          700: '#3d5a47',
-          800: '#34493b',
-          900: '#2c3d32',
-          950: '#161f1a',
+          50: '#f5f3ff',
+          100: '#ede9fe',
+          200: '#ddd6fe',
+          300: '#c4b5fd',
+          400: '#a78bfa',
+          500: '#8b5cf6',
+          600: '#7c3aed',
+          700: '#6d28d9',
+          800: '#5b21b6',
+          900: '#4c1d95',
+          950: '#2e1065',
         },
-        // Pesca - Accento (calore, cura personale, delicatezza)
+        // Teal - Secondario (freschezza, benessere, equilibrio)
         secondary: {
-          50: '#fdf6f3',
-          100: '#fceee8',
-          200: '#f9ddd2',
-          300: '#f4c4b0',
-          400: '#e8b4a0',
-          500: '#d9927a',
-          600: '#c67a5f',
-          700: '#a6624c',
-          800: '#895242',
-          900: '#72473a',
-          950: '#3d231c',
+          50: '#f0fdfa',
+          100: '#ccfbf1',
+          200: '#99f6e4',
+          300: '#5eead4',
+          400: '#2dd4bf',
+          500: '#14b8a6',
+          600: '#0d9488',
+          700: '#0f766e',
+          800: '#115e59',
+          900: '#134e4a',
+          950: '#042f2e',
         },
         // Neutri caldi per complementare
         warm: {
@@ -55,7 +55,7 @@ export default {
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'hero-pattern': 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%233d5a47\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
+        'hero-pattern': 'url("data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%236d28d9\' fill-opacity=\'0.03\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")',
       },
       animation: {
         'float': 'float 6s ease-in-out infinite',
