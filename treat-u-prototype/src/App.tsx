@@ -19,12 +19,16 @@ import { ProfilePage } from './pages/client/ProfilePage';
 import { SettingsPage } from './pages/client/SettingsPage';
 import { FavoritesPage } from './pages/client/FavoritesPage';
 import { ClientDashboardPage } from './pages/client/DashboardPage';
+import { ChatPage } from './pages/client/ChatPage';
 
 // Professional Pages
 import { RegisterProfessionalPage } from './pages/professional/RegisterProfessionalPage';
 import { DashboardPage } from './pages/professional/DashboardPage';
 import { CalendarPage } from './pages/professional/CalendarPage';
 import { ProfessionalProfilePage as ProProfilePage } from './pages/professional/ProfilePage';
+
+// Admin Pages
+import { AdminDashboardPage } from './pages/admin/AdminDashboardPage';
 
 // ============================================
 // APP
@@ -76,12 +80,17 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<SettingsPage />} />
           <Route path="/favorites" element={<FavoritesPage />} />
+          <Route path="/chat" element={<ChatPage />} />
+          <Route path="/chat/:conversationId" element={<ChatPage />} />
 
           {/* Professional Routes */}
           <Route path="/pro/register" element={<RegisterProfessionalPage />} />
           <Route path="/pro/dashboard" element={<DashboardPage />} />
           <Route path="/pro/calendar" element={<CalendarPage />} />
           <Route path="/pro/profile" element={<ProProfilePage />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

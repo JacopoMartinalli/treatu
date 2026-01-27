@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { useState } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
 import {
   ArrowRight,
   ArrowLeft,
@@ -13,48 +13,52 @@ import {
   Activity,
   Heart,
   Brain,
-  Smile,
   Zap,
   Moon,
-} from 'lucide-react';
-import { Button, Card } from '../shared';
-import { cn } from '../../utils/cn';
+  Search,
+} from 'lucide-react'
+import { Button } from '../shared'
+import { cn } from '../../utils/cn'
+import { BodyMap } from './BodyMap'
 
 // ============================================
 // TYPES
 // ============================================
 
-type WizardStep = 'goal' | 'area' | 'symptoms' | 'preferences' | 'results';
+type WizardStep = 'goal' | 'area' | 'symptoms' | 'preferences' | 'results'
 
 interface TreatmentGoal {
-  id: string;
-  label: string;
-  description: string;
-  icon: React.ReactNode;
-  color: string;
-}
-
-interface BodyArea {
-  id: string;
-  label: string;
-  icon: string;
+  id: string
+  label: string
+  description: string
+  icon: React.ReactNode
+  color: string
 }
 
 interface Symptom {
-  id: string;
-  label: string;
-  severity?: 'mild' | 'moderate' | 'severe';
+  id: string
+  label: string
 }
 
-interface WizardData {
-  goal: string | null;
-  bodyAreas: string[];
-  symptoms: string[];
+export interface WizardData {
+  goal: string | null
+  bodyAreas: string[]
+  symptoms: string[]
   preferences: {
-    homeService: boolean;
-    urgency: 'asap' | 'this_week' | 'flexible';
-    priceRange: 'budget' | 'mid' | 'premium';
-  };
+    homeService: boolean
+    urgency: 'asap' | 'this_week' | 'flexible'
+    priceRange: 'budget' | 'mid' | 'premium'
+  }
+}
+
+// Suggested treatments based on wizard selections
+export interface SuggestedTreatment {
+  name: string
+  category: string
+  description: string
+  matchScore: number // 0-100
+  estimatedDuration: number
+  estimatedPrice: string
 }
 
 // ============================================
@@ -97,29 +101,7 @@ const treatmentGoals: TreatmentGoal[] = [
     icon: <Brain className="w-6 h-6" />,
     color: 'bg-purple-100 text-purple-600 border-purple-200',
   },
-  {
-    id: 'beauty',
-    label: 'Estetica e cura',
-    description: 'Trattamenti estetici e di bellezza',
-    icon: <Smile className="w-6 h-6" />,
-    color: 'bg-teal-100 text-teal-600 border-teal-200',
-  },
-];
-
-const bodyAreas: BodyArea[] = [
-  { id: 'head', label: 'Testa / Viso', icon: '🧠' },
-  { id: 'neck', label: 'Collo', icon: '🦒' },
-  { id: 'shoulders', label: 'Spalle', icon: '💪' },
-  { id: 'back_upper', label: 'Schiena alta', icon: '🔙' },
-  { id: 'back_lower', label: 'Zona lombare', icon: '⬇️' },
-  { id: 'arms', label: 'Braccia / Mani', icon: '🤲' },
-  { id: 'chest', label: 'Torace', icon: '🫁' },
-  { id: 'abdomen', label: 'Addome', icon: '🔵' },
-  { id: 'hips', label: 'Anche / Bacino', icon: '🦴' },
-  { id: 'legs', label: 'Gambe', icon: '🦵' },
-  { id: 'feet', label: 'Piedi', icon: '🦶' },
-  { id: 'full_body', label: 'Tutto il corpo', icon: '🧘' },
-];
+]
 
 const symptomsByGoal: Record<string, Symptom[]> = {
   pain_relief: [
@@ -160,26 +142,52 @@ const symptomsByGoal: Record<string, Symptom[]> = {
     { id: 'grounding', label: 'Bisogno di radicamento' },
     { id: 'self_care', label: 'Tempo per me stesso/a' },
   ],
-  beauty: [
-    { id: 'anti_aging', label: 'Anti-aging' },
-    { id: 'cellulite', label: 'Cellulite' },
-    { id: 'skin_care', label: 'Cura della pelle' },
-    { id: 'body_shaping', label: 'Modellamento corpo' },
-    { id: 'facial', label: 'Trattamento viso' },
-  ],
-};
+}
+
+// Treatment matching logic (will query Supabase once connected)
+function getSuggestedTreatments(data: WizardData): SuggestedTreatment[] {
+  const goalMap: Record<string, SuggestedTreatment[]> = {
+    pain_relief: [
+      { name: 'Massaggio Decontratturante', category: 'massaggio', description: 'Massaggio profondo per sciogliere contratture e tensioni', matchScore: 95, estimatedDuration: 60, estimatedPrice: '50-80' },
+      { name: 'Fisioterapia - Trattamento', category: 'fisioterapia', description: 'Seduta di fisioterapia manuale', matchScore: 90, estimatedDuration: 50, estimatedPrice: '60-90' },
+      { name: 'Osteopatia', category: 'osteopatia', description: 'Trattamento osteopatico globale', matchScore: 85, estimatedDuration: 60, estimatedPrice: '70-100' },
+    ],
+    relaxation: [
+      { name: 'Massaggio Rilassante', category: 'massaggio', description: 'Massaggio rilassante per ridurre lo stress', matchScore: 98, estimatedDuration: 60, estimatedPrice: '45-75' },
+      { name: 'Massaggio Hot Stone', category: 'massaggio', description: 'Massaggio con pietre calde vulcaniche', matchScore: 88, estimatedDuration: 75, estimatedPrice: '70-100' },
+      { name: 'Yoga a Domicilio', category: 'fitness', description: 'Lezione privata di yoga', matchScore: 80, estimatedDuration: 60, estimatedPrice: '40-60' },
+    ],
+    wellness: [
+      { name: 'Massaggio Rilassante', category: 'massaggio', description: 'Massaggio per il benessere generale', matchScore: 90, estimatedDuration: 60, estimatedPrice: '45-75' },
+      { name: 'Consulenza Nutrizionale', category: 'nutrizione', description: 'Visita con piano alimentare personalizzato', matchScore: 85, estimatedDuration: 60, estimatedPrice: '60-90' },
+      { name: 'Personal Training', category: 'fitness', description: 'Sessione di allenamento personalizzato', matchScore: 82, estimatedDuration: 60, estimatedPrice: '40-70' },
+    ],
+    recovery: [
+      { name: 'Massaggio Sportivo', category: 'massaggio', description: 'Massaggio specifico per sportivi', matchScore: 96, estimatedDuration: 45, estimatedPrice: '50-80' },
+      { name: 'Fisioterapia - Trattamento', category: 'fisioterapia', description: 'Seduta di fisioterapia manuale', matchScore: 88, estimatedDuration: 50, estimatedPrice: '60-90' },
+      { name: 'Massaggio Decontratturante', category: 'massaggio', description: 'Massaggio profondo post-attivita', matchScore: 82, estimatedDuration: 60, estimatedPrice: '50-80' },
+    ],
+    mental: [
+      { name: 'Massaggio Rilassante', category: 'massaggio', description: 'Rilassamento profondo per la mente', matchScore: 92, estimatedDuration: 60, estimatedPrice: '45-75' },
+      { name: 'Yoga a Domicilio', category: 'fitness', description: 'Lezione di yoga per rilascio emotivo', matchScore: 88, estimatedDuration: 60, estimatedPrice: '40-60' },
+      { name: 'Massaggio Hot Stone', category: 'massaggio', description: 'Esperienza di rilassamento totale', matchScore: 80, estimatedDuration: 75, estimatedPrice: '70-100' },
+    ],
+  }
+
+  return goalMap[data.goal || ''] || []
+}
 
 // ============================================
 // COMPONENT
 // ============================================
 
 interface TreatmentFinderWizardProps {
-  onComplete: (data: WizardData) => void;
-  onClose: () => void;
+  onComplete: (data: WizardData) => void
+  onClose: () => void
 }
 
 export function TreatmentFinderWizard({ onComplete, onClose }: TreatmentFinderWizardProps) {
-  const [currentStep, setCurrentStep] = useState<WizardStep>('goal');
+  const [currentStep, setCurrentStep] = useState<WizardStep>('goal')
   const [data, setData] = useState<WizardData>({
     goal: null,
     bodyAreas: [],
@@ -189,44 +197,44 @@ export function TreatmentFinderWizard({ onComplete, onClose }: TreatmentFinderWi
       urgency: 'this_week',
       priceRange: 'mid',
     },
-  });
+  })
 
-  const steps: WizardStep[] = ['goal', 'area', 'symptoms', 'preferences', 'results'];
-  const currentStepIndex = steps.indexOf(currentStep);
-  const progress = ((currentStepIndex + 1) / steps.length) * 100;
+  const steps: WizardStep[] = ['goal', 'area', 'symptoms', 'preferences', 'results']
+  const currentStepIndex = steps.indexOf(currentStep)
+  const progress = ((currentStepIndex + 1) / steps.length) * 100
 
   const canProceed = () => {
     switch (currentStep) {
       case 'goal':
-        return data.goal !== null;
+        return data.goal !== null
       case 'area':
-        return data.bodyAreas.length > 0;
+        return data.bodyAreas.length > 0
       case 'symptoms':
-        return data.symptoms.length > 0;
+        return data.symptoms.length > 0
       case 'preferences':
-        return true;
+        return true
       default:
-        return false;
+        return false
     }
-  };
+  }
 
   const handleNext = () => {
     if (currentStep === 'preferences') {
-      onComplete(data);
-      return;
+      setCurrentStep('results')
+      return
     }
-    const nextIndex = currentStepIndex + 1;
+    const nextIndex = currentStepIndex + 1
     if (nextIndex < steps.length) {
-      setCurrentStep(steps[nextIndex]);
+      setCurrentStep(steps[nextIndex])
     }
-  };
+  }
 
   const handleBack = () => {
-    const prevIndex = currentStepIndex - 1;
+    const prevIndex = currentStepIndex - 1
     if (prevIndex >= 0) {
-      setCurrentStep(steps[prevIndex]);
+      setCurrentStep(steps[prevIndex])
     }
-  };
+  }
 
   const toggleBodyArea = (areaId: string) => {
     setData((prev) => ({
@@ -234,8 +242,8 @@ export function TreatmentFinderWizard({ onComplete, onClose }: TreatmentFinderWi
       bodyAreas: prev.bodyAreas.includes(areaId)
         ? prev.bodyAreas.filter((id) => id !== areaId)
         : [...prev.bodyAreas, areaId],
-    }));
-  };
+    }))
+  }
 
   const toggleSymptom = (symptomId: string) => {
     setData((prev) => ({
@@ -243,8 +251,8 @@ export function TreatmentFinderWizard({ onComplete, onClose }: TreatmentFinderWi
       symptoms: prev.symptoms.includes(symptomId)
         ? prev.symptoms.filter((id) => id !== symptomId)
         : [...prev.symptoms, symptomId],
-    }));
-  };
+    }))
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
@@ -327,47 +335,57 @@ export function TreatmentFinderWizard({ onComplete, onClose }: TreatmentFinderWi
                 onChange={(prefs) => setData((prev) => ({ ...prev, preferences: prefs }))}
               />
             )}
+
+            {currentStep === 'results' && (
+              <StepResults
+                key="results"
+                data={data}
+                onSearchProfessionals={() => onComplete(data)}
+              />
+            )}
           </AnimatePresence>
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-          <Button
-            variant="ghost"
-            onClick={handleBack}
-            disabled={currentStepIndex === 0}
-            leftIcon={<ArrowLeft className="w-4 h-4" />}
-          >
-            Indietro
-          </Button>
+        {currentStep !== 'results' && (
+          <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
+            <Button
+              variant="ghost"
+              onClick={handleBack}
+              disabled={currentStepIndex === 0}
+              leftIcon={<ArrowLeft className="w-4 h-4" />}
+            >
+              Indietro
+            </Button>
 
-          <div className="flex items-center gap-2">
-            {steps.map((step, index) => (
-              <div
-                key={step}
-                className={cn(
-                  'w-2 h-2 rounded-full transition-colors',
-                  index === currentStepIndex
-                    ? 'bg-primary-600'
-                    : index < currentStepIndex
-                    ? 'bg-primary-300'
-                    : 'bg-gray-200'
-                )}
-              />
-            ))}
+            <div className="flex items-center gap-2">
+              {steps.map((step, index) => (
+                <div
+                  key={step}
+                  className={cn(
+                    'w-2 h-2 rounded-full transition-colors',
+                    index === currentStepIndex
+                      ? 'bg-primary-600'
+                      : index < currentStepIndex
+                      ? 'bg-primary-300'
+                      : 'bg-gray-200'
+                  )}
+                />
+              ))}
+            </div>
+
+            <Button
+              onClick={handleNext}
+              disabled={!canProceed()}
+              rightIcon={<ArrowRight className="w-4 h-4" />}
+            >
+              {currentStep === 'preferences' ? 'Vedi risultati' : 'Avanti'}
+            </Button>
           </div>
-
-          <Button
-            onClick={handleNext}
-            disabled={!canProceed()}
-            rightIcon={<ArrowRight className="w-4 h-4" />}
-          >
-            {currentStep === 'preferences' ? 'Trova professionisti' : 'Avanti'}
-          </Button>
-        </div>
+        )}
       </motion.div>
     </div>
-  );
+  )
 }
 
 // ============================================
@@ -378,8 +396,8 @@ function StepGoal({
   selectedGoal,
   onSelect,
 }: {
-  selectedGoal: string | null;
-  onSelect: (goalId: string) => void;
+  selectedGoal: string | null
+  onSelect: (goalId: string) => void
 }) {
   return (
     <motion.div
@@ -400,7 +418,7 @@ function StepGoal({
             key={goal.id}
             onClick={() => onSelect(goal.id)}
             className={cn(
-              'p-4 rounded-2xl border-2 text-left transition-all hover:shadow-md',
+              'p-4 rounded-2xl border-2 text-left transition-all hover:shadow-md relative',
               selectedGoal === goal.id
                 ? 'border-primary-500 bg-primary-50 shadow-md'
                 : 'border-gray-200 hover:border-gray-300'
@@ -423,15 +441,15 @@ function StepGoal({
         ))}
       </div>
     </motion.div>
-  );
+  )
 }
 
 function StepBodyArea({
   selectedAreas,
   onToggle,
 }: {
-  selectedAreas: string[];
-  onToggle: (areaId: string) => void;
+  selectedAreas: string[]
+  onToggle: (areaId: string) => void
 }) {
   return (
     <motion.div
@@ -443,39 +461,15 @@ function StepBodyArea({
         Quali zone vuoi trattare?
       </h3>
       <p className="text-gray-600 mb-6">
-        Puoi selezionare piu zone (seleziona almeno una)
+        Tocca le zone del corpo che vuoi trattare
       </p>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-        {bodyAreas.map((area) => (
-          <button
-            key={area.id}
-            onClick={() => onToggle(area.id)}
-            className={cn(
-              'p-3 rounded-xl border-2 text-center transition-all hover:shadow-md',
-              selectedAreas.includes(area.id)
-                ? 'border-primary-500 bg-primary-50 shadow-md'
-                : 'border-gray-200 hover:border-gray-300'
-            )}
-          >
-            <span className="text-2xl mb-2 block">{area.icon}</span>
-            <span className="text-sm font-medium text-gray-700">{area.label}</span>
-            {selectedAreas.includes(area.id) && (
-              <CheckCircle className="w-4 h-4 text-primary-600 mx-auto mt-1" />
-            )}
-          </button>
-        ))}
-      </div>
-
-      {selectedAreas.length > 0 && (
-        <div className="mt-4 p-3 bg-primary-50 rounded-xl">
-          <p className="text-sm text-primary-700">
-            <strong>{selectedAreas.length}</strong> {selectedAreas.length === 1 ? 'zona selezionata' : 'zone selezionate'}
-          </p>
-        </div>
-      )}
+      <BodyMap
+        selectedAreas={selectedAreas}
+        onToggle={onToggle}
+      />
     </motion.div>
-  );
+  )
 }
 
 function StepSymptoms({
@@ -483,11 +477,11 @@ function StepSymptoms({
   selectedSymptoms,
   onToggle,
 }: {
-  goal: string;
-  selectedSymptoms: string[];
-  onToggle: (symptomId: string) => void;
+  goal: string
+  selectedSymptoms: string[]
+  onToggle: (symptomId: string) => void
 }) {
-  const symptoms = symptomsByGoal[goal] || [];
+  const symptoms = symptomsByGoal[goal] || []
 
   return (
     <motion.div
@@ -542,15 +536,15 @@ function StepSymptoms({
         </div>
       )}
     </motion.div>
-  );
+  )
 }
 
 function StepPreferences({
   preferences,
   onChange,
 }: {
-  preferences: WizardData['preferences'];
-  onChange: (prefs: WizardData['preferences']) => void;
+  preferences: WizardData['preferences']
+  onChange: (prefs: WizardData['preferences']) => void
 }) {
   return (
     <motion.div
@@ -650,7 +644,85 @@ function StepPreferences({
         </div>
       </div>
     </motion.div>
-  );
+  )
 }
 
-export type { WizardData };
+function StepResults({
+  data,
+  onSearchProfessionals,
+}: {
+  data: WizardData
+  onSearchProfessionals: () => void
+}) {
+  const treatments = getSuggestedTreatments(data)
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+    >
+      <div className="text-center mb-6">
+        <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center mx-auto mb-4">
+          <Sparkles className="w-8 h-8 text-white" />
+        </div>
+        <h3 className="text-xl font-bold text-gray-900 mb-2">
+          Ecco i trattamenti consigliati per te
+        </h3>
+        <p className="text-gray-600">
+          In base alle tue risposte, ti suggeriamo questi trattamenti
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {treatments.map((treatment, index) => (
+          <motion.div
+            key={treatment.name}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            className="p-4 border-2 border-gray-200 rounded-2xl hover:border-primary-300 transition-all"
+          >
+            <div className="flex items-start justify-between mb-2">
+              <div>
+                <h4 className="font-semibold text-gray-900">{treatment.name}</h4>
+                <span className="text-xs font-medium text-primary-600 bg-primary-50 px-2 py-0.5 rounded-full">
+                  {treatment.category}
+                </span>
+              </div>
+              <div className="flex items-center gap-1 bg-green-100 px-2 py-1 rounded-full">
+                <CheckCircle className="w-3.5 h-3.5 text-green-600" />
+                <span className="text-xs font-bold text-green-700">{treatment.matchScore}%</span>
+              </div>
+            </div>
+            <p className="text-sm text-gray-600 mb-3">{treatment.description}</p>
+            <div className="flex items-center gap-4 text-xs text-gray-500">
+              <span className="flex items-center gap-1">
+                <Clock className="w-3.5 h-3.5" />
+                {treatment.estimatedDuration} min
+              </span>
+              <span className="flex items-center gap-1">
+                <Target className="w-3.5 h-3.5" />
+                {treatment.estimatedPrice} EUR
+              </span>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="mt-6 pt-4 border-t border-gray-100">
+        <Button
+          className="w-full"
+          size="lg"
+          onClick={onSearchProfessionals}
+          leftIcon={<Search className="w-5 h-5" />}
+        >
+          Cerca professionisti disponibili
+        </Button>
+        <p className="text-xs text-gray-500 text-center mt-3">
+          Troveremo i professionisti nella tua zona che offrono questi trattamenti
+        </p>
+      </div>
+    </motion.div>
+  )
+}

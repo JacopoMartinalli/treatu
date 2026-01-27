@@ -24,15 +24,13 @@ import {
   Shield,
   Star,
   ArrowRight,
-  Zap,
   Users,
-  CreditCard,
   Smartphone,
   CheckCircle,
 } from 'lucide-react';
 import { Button, Input, Card, Select, Badge } from '../../components/shared';
 import { useAuthStore } from '../../store/authStore';
-import { Service, PlanType, WeeklyAvailability, ServiceCategory } from '../../types';
+import { Service, WeeklyAvailability, ServiceCategory } from '../../types';
 import { serviceCategories } from '../../data/mockData';
 import toast from 'react-hot-toast';
 
@@ -40,12 +38,12 @@ import toast from 'react-hot-toast';
 // REGISTER PROFESSIONAL PAGE
 // ============================================
 
-type Step = 'intro' | 'account' | 'plan' | 'profile' | 'services' | 'availability' | 'preview';
+type Step = 'intro' | 'account' | 'profile' | 'documents' | 'services' | 'availability' | 'preview';
 
 const registrationSteps: { id: Step; label: string }[] = [
   { id: 'account', label: 'Account' },
-  { id: 'plan', label: 'Piano' },
   { id: 'profile', label: 'Profilo' },
+  { id: 'documents', label: 'Documenti' },
   { id: 'services', label: 'Servizi' },
   { id: 'availability', label: 'Disponibilita' },
   { id: 'preview', label: 'Anteprima' },
@@ -81,7 +79,7 @@ export function RegisterProfessionalPage() {
     street: '',
     city: 'Milano',
     coverageRadius: 15,
-    plan: 'free' as PlanType,
+    specializations: [] as string[],
     services: [] as Service[],
     availability: defaultAvailability,
     isMarketplaceVisible: true,
@@ -130,7 +128,7 @@ export function RegisterProfessionalPage() {
         phone: formData.phone,
         bio: formData.bio,
         partitaIva: formData.partitaIva,
-        plan: formData.plan,
+        plan: 'free',
         coverageRadius: formData.coverageRadius,
         baseLocation: {
           street: formData.street,
@@ -237,20 +235,18 @@ export function RegisterProfessionalPage() {
               />
             )}
 
-            {currentStep === 'plan' && (
-              <PlanStep
-                selectedPlan={formData.plan}
-                onSelectPlan={(plan) => updateField('plan', plan)}
-                onBack={goBack}
-                onNext={goNext}
-              />
-            )}
-
             {currentStep === 'profile' && (
               <ProfileStep
                 formData={formData}
                 updateField={updateField}
                 errors={errors}
+                onBack={goBack}
+                onNext={goNext}
+              />
+            )}
+
+            {currentStep === 'documents' && (
+              <DocumentsStep
                 onBack={goBack}
                 onNext={goNext}
               />
@@ -605,79 +601,56 @@ function IntroSection({ onStart }: { onStart: () => void }) {
         </div>
       </section>
 
-      {/* Pricing Preview */}
+      {/* Free for Everyone */}
       <section className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center mb-12"
+            className="text-center"
           >
             <span className="inline-block text-primary-600 font-semibold text-sm uppercase tracking-wider mb-4">
-              Piani e prezzi
+              Gratuito per sempre
             </span>
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">
-              Scegli il piano giusto per te
+              Zero costi, solo opportunita
             </h2>
-          </motion.div>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto mb-10">
+              TreatU e completamente gratuito per i professionisti. Nessun abbonamento, nessun costo nascosto. Paghi solo una piccola commissione quando ricevi una prenotazione.
+            </p>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Free Plan */}
             <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="bg-gray-50 rounded-2xl p-8 border-2 border-gray-200"
+              className="bg-primary-50 rounded-2xl p-8 border-2 border-primary-200 max-w-lg mx-auto"
             >
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Piano Free</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-4xl font-bold text-gray-900">EUR 0</span>
-                <span className="text-gray-500">/mese</span>
+              <div className="flex items-baseline justify-center gap-1 mb-2">
+                <span className="text-5xl font-bold text-primary-600">EUR 0</span>
+                <span className="text-gray-500 text-lg">/mese</span>
               </div>
-              <p className="text-gray-600 mb-6">Commissione del 5% su ogni prenotazione</p>
-              <ul className="space-y-3 mb-8">
-                {['Profilo sul marketplace', 'Gestione prenotazioni', 'Calendario base', 'Supporto email'].map((item) => (
+              <p className="text-gray-600 mb-6">Solo una piccola commissione per prenotazione</p>
+              <ul className="space-y-3 mb-8 text-left max-w-xs mx-auto">
+                {[
+                  'Profilo sul marketplace',
+                  'Gestione prenotazioni',
+                  'Calendario completo',
+                  'Chat con i clienti',
+                  'Statistiche e guadagni',
+                  'Supporto dedicato',
+                ].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-gray-700">
-                    <CheckCircle className="w-5 h-5 text-green-500" />
+                    <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0" />
                     {item}
                   </li>
                 ))}
               </ul>
-              <Button variant="outline" className="w-full" onClick={onStart}>
-                Inizia gratis
+              <Button size="lg" onClick={onStart} className="w-full">
+                Inizia gratuitamente
               </Button>
             </motion.div>
-
-            {/* Premium Plan */}
-            <motion.div
-              initial={{ opacity: 0, x: 20 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="bg-primary-600 rounded-2xl p-8 border-2 border-primary-600 text-white relative overflow-hidden"
-            >
-              <div className="absolute top-4 right-4 bg-white/20 text-white text-xs font-semibold px-3 py-1 rounded-full">
-                Consigliato
-              </div>
-              <h3 className="text-xl font-bold mb-2">Piano Premium</h3>
-              <div className="flex items-baseline gap-1 mb-4">
-                <span className="text-4xl font-bold">EUR 29</span>
-                <span className="text-primary-200">/mese</span>
-              </div>
-              <p className="text-primary-100 mb-6">Nessuna commissione sulle prenotazioni</p>
-              <ul className="space-y-3 mb-8">
-                {['Tutto del piano Free', 'Zero commissioni', 'Visibilita prioritaria', 'Statistiche avanzate', 'Supporto prioritario'].map((item) => (
-                  <li key={item} className="flex items-center gap-2">
-                    <CheckCircle className="w-5 h-5 text-primary-200" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-              <Button className="w-full bg-white text-primary-600 hover:bg-primary-50" onClick={onStart}>
-                Inizia con Premium
-              </Button>
-            </motion.div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
@@ -797,111 +770,108 @@ function AccountStep({
   );
 }
 
-function PlanStep({
-  selectedPlan,
-  onSelectPlan,
+function DocumentsStep({
   onBack,
   onNext,
 }: {
-  selectedPlan: PlanType;
-  onSelectPlan: (plan: PlanType) => void;
   onBack: () => void;
   onNext: () => void;
 }) {
+  const [documents, setDocuments] = useState<{ type: string; name: string }[]>([]);
+
+  const documentTypes = [
+    { id: 'id_card', label: 'Documento di identita', description: 'Carta d\'identita o passaporto', required: true },
+    { id: 'partita_iva', label: 'Certificato P.IVA', description: 'Visura camerale o certificato attribuzione', required: true },
+    { id: 'certification', label: 'Certificazioni professionali', description: 'Diplomi, attestati, abilitazioni', required: false },
+    { id: 'insurance', label: 'Assicurazione professionale', description: 'Polizza RC professionale', required: false },
+  ];
+
+  const handleFileSelect = (type: string) => {
+    // Mock file selection - will be replaced with actual file upload to Supabase Storage
+    const mockFileName = `documento_${type}_${Date.now()}.pdf`;
+    if (!documents.find(d => d.type === type)) {
+      setDocuments(prev => [...prev, { type, name: mockFileName }]);
+    }
+    toast.success('Documento caricato (demo)');
+  };
+
+  const removeDocument = (type: string) => {
+    setDocuments(prev => prev.filter(d => d.type !== type));
+  };
+
+  const requiredUploaded = documentTypes
+    .filter(d => d.required)
+    .every(d => documents.find(doc => doc.type === d.id));
+
   return (
     <div className="space-y-6">
       <Card padding="lg">
-        <h2 className="text-xl font-semibold text-gray-900 mb-6">
-          Scegli il tuo piano
+        <h2 className="text-xl font-semibold text-gray-900 mb-2">
+          Documenti di verifica
         </h2>
+        <p className="text-gray-600 mb-6">
+          Carica i documenti necessari per la verifica del tuo profilo. Il team TreatU li revisera entro 24-48h.
+        </p>
 
-        <div className="grid md:grid-cols-2 gap-4">
-          {/* Free Plan */}
-          <button
-            onClick={() => onSelectPlan('free')}
-            className={`p-6 border-2 rounded-xl text-left transition-all ${
-              selectedPlan === 'free'
-                ? 'border-primary-600 bg-primary-50'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-semibold text-gray-900">Piano Free</h3>
-                <p className="text-2xl font-bold text-gray-900 mt-2">
-                  EUR 0<span className="text-sm font-normal text-gray-500">/mese</span>
-                </p>
-              </div>
-              {selectedPlan === 'free' && (
-                <div className="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
-                  <Check className="w-4 h-4 text-white" />
+        <div className="space-y-4">
+          {documentTypes.map((docType) => {
+            const uploaded = documents.find(d => d.type === docType.id);
+            return (
+              <div
+                key={docType.id}
+                className={`p-4 border-2 rounded-xl transition-all ${
+                  uploaded
+                    ? 'border-green-300 bg-green-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-5 h-5 text-gray-600" />
+                      <h4 className="font-medium text-gray-900">
+                        {docType.label}
+                        {docType.required && (
+                          <span className="text-red-500 ml-1">*</span>
+                        )}
+                      </h4>
+                    </div>
+                    <p className="text-sm text-gray-500 mt-1 ml-7">{docType.description}</p>
+                    {uploaded && (
+                      <p className="text-sm text-green-600 mt-2 ml-7 flex items-center gap-1">
+                        <CheckCircle className="w-4 h-4" />
+                        {uploaded.name}
+                      </p>
+                    )}
+                  </div>
+                  {uploaded ? (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => removeDocument(docType.id)}
+                    >
+                      <Trash2 className="w-4 h-4 text-red-500" />
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleFileSelect(docType.id)}
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Carica
+                    </Button>
+                  )}
                 </div>
-              )}
-            </div>
-            <p className="text-sm text-gray-600 mt-4">
-              Commissione del 5% su ogni prenotazione
-            </p>
-            <ul className="mt-4 space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                Profilo sul marketplace
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                Gestione prenotazioni
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                Calendario base
-              </li>
-            </ul>
-          </button>
+              </div>
+            );
+          })}
+        </div>
 
-          {/* Premium Plan */}
-          <button
-            onClick={() => onSelectPlan('premium')}
-            className={`p-6 border-2 rounded-xl text-left transition-all relative ${
-              selectedPlan === 'premium'
-                ? 'border-primary-600 bg-primary-50'
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
-          >
-            <Badge variant="success" className="absolute top-4 right-4">
-              Consigliato
-            </Badge>
-            <div className="flex items-start justify-between">
-              <div>
-                <h3 className="font-semibold text-gray-900">Piano Premium</h3>
-                <p className="text-2xl font-bold text-gray-900 mt-2">
-                  EUR 29<span className="text-sm font-normal text-gray-500">/mese</span>
-                </p>
-              </div>
-              {selectedPlan === 'premium' && (
-                <div className="w-6 h-6 bg-primary-600 rounded-full flex items-center justify-center">
-                  <Check className="w-4 h-4 text-white" />
-                </div>
-              )}
-            </div>
-            <p className="text-sm text-gray-600 mt-4">Nessuna commissione sulle prenotazioni</p>
-            <ul className="mt-4 space-y-2 text-sm text-gray-600">
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                Tutto del piano Free
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                Visibilita prioritaria
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                Statistiche avanzate
-              </li>
-              <li className="flex items-center gap-2">
-                <Check className="w-4 h-4 text-green-500" />
-                Supporto prioritario
-              </li>
-            </ul>
-          </button>
+        <div className="mt-4 p-3 bg-blue-50 rounded-xl">
+          <p className="text-sm text-blue-800">
+            <strong>Nota:</strong> I documenti con * sono obbligatori. I documenti opzionali possono essere caricati anche dopo la registrazione.
+          </p>
         </div>
       </Card>
 
@@ -910,11 +880,21 @@ function PlanStep({
           <ChevronLeft className="w-5 h-5 mr-2" />
           Indietro
         </Button>
-        <Button onClick={onNext} className="flex-1">
+        <Button
+          onClick={onNext}
+          className="flex-1"
+          disabled={!requiredUploaded}
+        >
           Continua
           <ChevronRight className="w-5 h-5 ml-2" />
         </Button>
       </div>
+
+      {!requiredUploaded && (
+        <p className="text-sm text-center text-gray-500">
+          Carica i documenti obbligatori per continuare
+        </p>
+      )}
     </div>
   );
 }
@@ -1378,7 +1358,6 @@ function PreviewStep({
     firstName: string;
     lastName: string;
     bio: string;
-    plan: PlanType;
     services: Service[];
     street: string;
     city: string;
@@ -1406,9 +1385,7 @@ function PreviewStep({
                 {formData.firstName} {formData.lastName}
               </h3>
               <div className="flex items-center gap-2 mt-1">
-                <Badge variant={formData.plan === 'premium' ? 'success' : 'default'}>
-                  Piano {formData.plan === 'premium' ? 'Premium' : 'Free'}
-                </Badge>
+                <Badge variant="success">Profilo gratuito</Badge>
                 <span className="text-sm text-gray-500">
                   {formData.city} ({formData.coverageRadius}km)
                 </span>

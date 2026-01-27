@@ -1,81 +1,86 @@
-import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
-import { Client, Professional } from '../types';
-import { mockClients, mockProfessionals } from '../data/mockData';
+import { create } from 'zustand'
+import { persist } from 'zustand/middleware'
+import type { Session } from '@supabase/supabase-js'
+import type { DbUser } from '../types/database'
+import { Client, Professional } from '../types'
+import { mockClients, mockProfessionals } from '../data/mockData'
 
 // ============================================
-// TYPES
+// Dual-mode auth store:
+// - When Supabase is configured: uses real auth (DbUser)
+// - Fallback: uses mock data (Client | Professional)
 // ============================================
 
-type User = Client | Professional | null;
+type LegacyUser = Client | Professional
+type AppUser = DbUser | LegacyUser | null
 
 interface AuthState {
-  user: User;
-  isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
+  user: AppUser
+  session: Session | null
+  isAuthenticated: boolean
+  isLoading: boolean
+  error: string | null
 
-  // Actions
-  loginAsClient: (email: string, password: string) => Promise<boolean>;
-  loginAsProfessional: (email: string, password: string) => Promise<boolean>;
-  registerClient: (data: Partial<Client>) => Promise<boolean>;
-  registerProfessional: (data: Partial<Professional>) => Promise<boolean>;
-  logout: () => void;
-  clearError: () => void;
+  // New Supabase setters
+  setUser: (user: DbUser | null) => void
+  setSession: (session: Session | null) => void
+  setLoading: (loading: boolean) => void
+  setError: (error: string | null) => void
+  clearError: () => void
+  logout: () => void
+
+  // Legacy mock methods (for existing pages)
+  loginAsClient: (email: string, password: string) => Promise<boolean>
+  loginAsProfessional: (email: string, password: string) => Promise<boolean>
+  registerClient: (data: Partial<Client>) => Promise<boolean>
+  registerProfessional: (data: Partial<Professional>) => Promise<boolean>
 }
-
-// ============================================
-// STORE
-// ============================================
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
+      session: null,
       isAuthenticated: false,
       isLoading: false,
       error: null,
 
+      // -- Supabase setters --
+      setUser: (user) => set({ user, isAuthenticated: !!user }),
+      setSession: (session) => set({ session, isAuthenticated: !!session }),
+      setLoading: (isLoading) => set({ isLoading }),
+      setError: (error) => set({ error }),
+      clearError: () => set({ error: null }),
+      logout: () => set({ user: null, session: null, isAuthenticated: false, error: null }),
+
+      // -- Legacy mock methods (will be removed once Supabase auth pages are built) --
       loginAsClient: async (email: string, _password: string) => {
-        set({ isLoading: true, error: null });
-
-        // Simula delay di rete
-        await new Promise((resolve) => setTimeout(resolve, 800));
-
-        // Mock: cerca il cliente o usa il demo
-        const client = mockClients.find((c) => c.email === email) || mockClients[1];
-
+        set({ isLoading: true, error: null })
+        await new Promise((r) => setTimeout(r, 800))
+        const client = mockClients.find((c) => c.email === email) || mockClients[1]
         if (client) {
-          set({ user: client, isAuthenticated: true, isLoading: false });
-          return true;
+          set({ user: client, isAuthenticated: true, isLoading: false })
+          return true
         }
-
-        set({ error: 'Credenziali non valide', isLoading: false });
-        return false;
+        set({ error: 'Credenziali non valide', isLoading: false })
+        return false
       },
 
       loginAsProfessional: async (email: string, _password: string) => {
-        set({ isLoading: true, error: null });
-
-        await new Promise((resolve) => setTimeout(resolve, 800));
-
-        const professional = mockProfessionals.find((p) => p.email === email) || mockProfessionals[0];
-
-        if (professional) {
-          set({ user: professional, isAuthenticated: true, isLoading: false });
-          return true;
+        set({ isLoading: true, error: null })
+        await new Promise((r) => setTimeout(r, 800))
+        const pro = mockProfessionals.find((p) => p.email === email) || mockProfessionals[0]
+        if (pro) {
+          set({ user: pro, isAuthenticated: true, isLoading: false })
+          return true
         }
-
-        set({ error: 'Credenziali non valide', isLoading: false });
-        return false;
+        set({ error: 'Credenziali non valide', isLoading: false })
+        return false
       },
 
       registerClient: async (data: Partial<Client>) => {
-        set({ isLoading: true, error: null });
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        // Mock: crea nuovo cliente
+        set({ isLoading: true, error: null })
+        await new Promise((r) => setTimeout(r, 1000))
         const newClient: Client = {
           id: `client-${Date.now()}`,
           email: data.email || '',
@@ -93,18 +98,15 @@ export const useAuthStore = create<AuthState>()(
           },
           favoritesProfessionals: [],
           createdAt: new Date(),
-        };
-
-        set({ user: newClient, isAuthenticated: true, isLoading: false });
-        return true;
+        }
+        set({ user: newClient, isAuthenticated: true, isLoading: false })
+        return true
       },
 
       registerProfessional: async (data: Partial<Professional>) => {
-        set({ isLoading: true, error: null });
-
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        const newProfessional: Professional = {
+        set({ isLoading: true, error: null })
+        await new Promise((r) => setTimeout(r, 1000))
+        const newPro: Professional = {
           id: `prof-${Date.now()}`,
           email: data.email || '',
           firstName: data.firstName || '',
@@ -129,28 +131,14 @@ export const useAuthStore = create<AuthState>()(
           },
           services: data.services || [],
           availability: data.availability || {
-            monday: [],
-            tuesday: [],
-            wednesday: [],
-            thursday: [],
-            friday: [],
-            saturday: [],
-            sunday: [],
+            monday: [], tuesday: [], wednesday: [], thursday: [],
+            friday: [], saturday: [], sunday: [],
           },
           isMarketplaceVisible: true,
           createdAt: new Date(),
-        };
-
-        set({ user: newProfessional, isAuthenticated: true, isLoading: false });
-        return true;
-      },
-
-      logout: () => {
-        set({ user: null, isAuthenticated: false, error: null });
-      },
-
-      clearError: () => {
-        set({ error: null });
+        }
+        set({ user: newPro, isAuthenticated: true, isLoading: false })
+        return true
       },
     }),
     {
@@ -161,4 +149,4 @@ export const useAuthStore = create<AuthState>()(
       }),
     }
   )
-);
+)

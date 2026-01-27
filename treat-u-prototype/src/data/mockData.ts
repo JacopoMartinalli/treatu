@@ -145,8 +145,8 @@ const createServices = (professionalType: 'classic' | 'sport' | 'wellness' | 'lu
     luxury: [
       {
         id: generateId(),
-        name: 'Rituale Spa Completo',
-        description: 'Esperienza premium: scrub corpo, massaggio rilassante e trattamento viso. 2 ore di puro benessere.',
+        name: 'Rituale Benessere Completo',
+        description: 'Esperienza premium: scrub corpo, massaggio rilassante e massaggio decontratturante. 2 ore di puro benessere.',
         duration: 120,
         price: 180,
         category: 'olistico' as ServiceCategory,
@@ -325,7 +325,7 @@ export const mockProfessionals: Professional[] = [
     phone: '+39 335 1112233',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400',
     role: 'professional',
-    bio: 'Estetista e massaggiatrice con focus su trattamenti anticellulite e linfodrenaggio. Utilizzo solo prodotti naturali e biologici. La tua bellezza e il tuo benessere sono la mia priorità.',
+    bio: 'Massaggiatrice specializzata in trattamenti anticellulite e linfodrenaggio. Utilizzo solo prodotti naturali e biologici. Il tuo benessere è la mia priorità.',
     partitaIva: '56789012345',
     plan: 'free',
     rating: 4.6,

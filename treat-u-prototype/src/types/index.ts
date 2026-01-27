@@ -194,6 +194,38 @@ export interface Notification {
 }
 
 // ============================================
+// MESSAGGI E CONVERSAZIONI
+// ============================================
+
+export interface Conversation {
+  id: string;
+  participants: {
+    clientId: string;
+    clientName: string;
+    clientAvatar?: string;
+    professionalId: string;
+    professionalName: string;
+    professionalAvatar?: string;
+  };
+  bookingId?: string;
+  lastMessage?: Message;
+  unreadCount: number;
+  updatedAt: Date;
+  createdAt: Date;
+}
+
+export interface Message {
+  id: string;
+  conversationId: string;
+  senderId: string;
+  senderRole: 'client' | 'professional';
+  content: string;
+  type: 'text' | 'image' | 'booking_update';
+  read: boolean;
+  createdAt: Date;
+}
+
+// ============================================
 // STATISTICHE DASHBOARD
 // ============================================
 

@@ -12,6 +12,7 @@ import {
   Search,
   Briefcase,
   LayoutDashboard,
+  MessageCircle,
 } from 'lucide-react';
 import { cn } from '../../utils/cn';
 import { useAuthStore } from '../../store/authStore';
@@ -181,6 +182,13 @@ export function Navbar() {
                     >
                       Profilo
                     </NavLink>
+                    <NavLink
+                      to="/chat"
+                      active={location.pathname.startsWith('/chat')}
+                      isColored={!isLandingPage}
+                    >
+                      Messaggi
+                    </NavLink>
                   </>
                 ) : (
                   /* === CLIENT NAVIGATION (semplificato) === */
@@ -198,6 +206,13 @@ export function Navbar() {
                       isColored={!isLandingPage}
                     >
                       Prenotazioni
+                    </NavLink>
+                    <NavLink
+                      to="/chat"
+                      active={location.pathname.startsWith('/chat')}
+                      isColored={!isLandingPage}
+                    >
+                      Messaggi
                     </NavLink>
                   </>
                 )}
@@ -496,6 +511,15 @@ export function Navbar() {
                       >
                         Il mio Profilo
                       </MobileNavLink>
+                      <MobileNavLink
+                        to="/chat"
+                        icon={<MessageCircle className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname.startsWith('/chat')}
+                        isColored={!isLandingPage}
+                      >
+                        Messaggi
+                      </MobileNavLink>
                     </>
                   ) : (
                     /* Client Mobile Links */
@@ -535,6 +559,15 @@ export function Navbar() {
                         isColored={!isLandingPage}
                       >
                         I miei Preferiti
+                      </MobileNavLink>
+                      <MobileNavLink
+                        to="/chat"
+                        icon={<MessageCircle className="w-5 h-5" />}
+                        onClick={() => setIsMenuOpen(false)}
+                        active={location.pathname.startsWith('/chat')}
+                        isColored={!isLandingPage}
+                      >
+                        Messaggi
                       </MobileNavLink>
                     </>
                   )}
