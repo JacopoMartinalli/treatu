@@ -20,6 +20,16 @@ import { Button } from './Button';
 import { Avatar } from './Avatar';
 import { NotificationDropdown } from './NotificationDropdown';
 
+// Helper to access user fields regardless of DbUser (snake_case) vs LegacyUser (camelCase)
+function getUserDisplay(user: Record<string, unknown> | null) {
+  if (!user) return { avatar: undefined, firstName: '', lastName: '' };
+  return {
+    avatar: (user.avatar as string) ?? (user.avatar_url as string) ?? undefined,
+    firstName: (user.firstName as string) ?? (user.first_name as string) ?? '',
+    lastName: (user.lastName as string) ?? (user.last_name as string) ?? '',
+  };
+}
+
 // ============================================
 // COMPONENT
 // ============================================
@@ -34,6 +44,7 @@ export function Navbar() {
 
   const isProfessional = user?.role === 'professional';
   const isLandingPage = location.pathname === '/';
+  const ud = getUserDisplay(user as Record<string, unknown> | null);
 
   // Gestione scroll per effetto navbar
   useEffect(() => {
@@ -241,8 +252,8 @@ export function Navbar() {
                     )}
                   >
                     <Avatar
-                      src={user?.avatar}
-                      name={`${user?.firstName} ${user?.lastName}`}
+                      src={ud.avatar}
+                      name={`${ud.firstName} ${ud.lastName}`}
                       size="sm"
                     />
                     <span
@@ -251,7 +262,7 @@ export function Navbar() {
                         isLandingPage ? 'text-gray-700' : 'text-white'
                       )}
                     >
-                      {user?.firstName}
+                      {ud.firstName}
                     </span>
                   </button>
 
@@ -274,13 +285,13 @@ export function Navbar() {
                           >
                             <div className="flex items-center gap-3">
                               <Avatar
-                                src={user?.avatar}
-                                name={`${user?.firstName} ${user?.lastName}`}
+                                src={ud.avatar}
+                                name={`${ud.firstName} ${ud.lastName}`}
                                 size="md"
                               />
                               <div className="flex-1 min-w-0">
                                 <p className="font-medium text-gray-900 truncate">
-                                  {user?.firstName} {user?.lastName}
+                                  {ud.firstName} {ud.lastName}
                                 </p>
                                 <p className="text-xs text-gray-500 truncate">{user?.email}</p>
                               </div>
@@ -446,8 +457,8 @@ export function Navbar() {
                     )}
                   >
                     <Avatar
-                      src={user?.avatar}
-                      name={`${user?.firstName} ${user?.lastName}`}
+                      src={ud.avatar}
+                      name={`${ud.firstName} ${ud.lastName}`}
                       size="lg"
                     />
                     <div className="flex-1">
@@ -457,7 +468,7 @@ export function Navbar() {
                           isLandingPage ? 'text-gray-900' : 'text-white'
                         )}
                       >
-                        {user?.firstName} {user?.lastName}
+                        {ud.firstName} {ud.lastName}
                       </p>
                       <div
                         className={cn(
