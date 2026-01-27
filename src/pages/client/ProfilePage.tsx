@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../../store/authStore';
 import { useBookingStore } from '../../store/bookingStore';
+import { getUserDisplay } from '../../utils/userDisplay';
 import { Button, Card, Input, Avatar } from '../../components/shared';
 import { Client } from '../../types';
 import toast from 'react-hot-toast';
@@ -28,8 +29,8 @@ export function ProfilePage() {
   const { getBookingsForClient } = useBookingStore();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<Client>>({
-    firstName: user?.firstName || '',
-    lastName: user?.lastName || '',
+    firstName: getUserDisplay(user as Record<string, unknown>).firstName || '',
+    lastName: getUserDisplay(user as Record<string, unknown>).lastName || '',
     phone: user?.phone || '',
     address: (user as Client)?.address || {
       street: '',

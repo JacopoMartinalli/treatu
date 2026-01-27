@@ -5,6 +5,7 @@ import { Button } from './Button';
 import { useReviewStore } from '../../store/reviewStore';
 import { useAuthStore } from '../../store/authStore';
 import { Booking } from '../../types';
+import { getUserDisplay } from '../../utils/userDisplay';
 import toast from 'react-hot-toast';
 
 // ============================================
@@ -39,8 +40,8 @@ export function ReviewForm({ booking, onSuccess, onCancel }: ReviewFormProps) {
       await addReview({
         professionalId: booking.professionalId,
         clientId: user?.id || '',
-        clientName: `${user?.firstName} ${user?.lastName?.charAt(0)}.`,
-        clientAvatar: user?.avatar,
+        clientName: `${getUserDisplay(user as Record<string, unknown>).firstName} ${getUserDisplay(user as Record<string, unknown>).lastName?.charAt(0)}.`,
+        clientAvatar: getUserDisplay(user as Record<string, unknown>).avatar,
         rating,
         comment: comment.trim(),
         serviceId: booking.service.id,
